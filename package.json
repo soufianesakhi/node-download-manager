@@ -1,6 +1,6 @@
 {
   "name": "node-download-manager",
-  "version": "0.0.0",
+  "version": "0.1",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -8,7 +8,11 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-server": "tsc -p src/tsconfig.server.json && title node && node dist-server/main",
+    "watch-ng": "ng build --watch",
+    "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server\"",
+    "l": "start npm run watch-ng& start npm run watch-server&"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +25,9 @@
     "@angular/platform-browser": "^5.2.0",
     "@angular/platform-browser-dynamic": "^5.2.0",
     "@angular/router": "^5.2.0",
+    "body-parser": "^1.18.2",
     "core-js": "^2.4.1",
+    "express": "^4.16.2",
     "rxjs": "^5.5.6",
     "zone.js": "^0.8.19"
   },
@@ -29,6 +35,8 @@
     "@angular/cli": "~1.7.0",
     "@angular/compiler-cli": "^5.2.0",
     "@angular/language-service": "^5.2.0",
+    "@types/body-parser": "^1.16.8",
+    "@types/express": "^4.11.1",
     "@types/jasmine": "~2.8.3",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
@@ -40,6 +48,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "nodemon": "^1.15.0",
     "protractor": "~5.1.2",
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
