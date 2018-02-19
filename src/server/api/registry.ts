@@ -1,14 +1,15 @@
 import { Request, Response, Express, Router } from 'express';
 import { Connection } from 'mongoose';
-import { UsersAPI } from './users';
 import * as express from 'express';
+import { MongoAPI } from './mongo';
+import { DownloadLinksAPI } from './dl-links';
 
 export class ApiRegistry {
     private router = Router();
 
     private constructor() {
         this.router.get('/', this.get);
-        new UsersAPI(this.router).init('/users');
+        new DownloadLinksAPI(this.router, '/downloads').init();
     }
 
     public static init(app: Express) {

@@ -6,6 +6,10 @@ export interface User {
     lastName: string;
 }
 
+export interface UserModel extends User, Document {
+    createdAt: Date;
+}
+
 const userSchema = new Schema({
     email: String,
     firstName: {
@@ -24,7 +28,3 @@ userSchema.pre("save", function (next) {
 });
 
 export const UsersDAO = model('User', userSchema);
-
-export interface UserModel extends User, Document {
-    // custom methods for your model would be defined here
-}
