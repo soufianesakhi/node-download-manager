@@ -2,7 +2,8 @@ import * as http from 'http';
 import * as path from 'path';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import * as api from './api/router';
+import * as mongoose from 'mongoose';
+import { ApiRegistry } from './api/registry';
 
 const app = express();
 
@@ -13,8 +14,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Point static path to dist
 app.use(express.static(path.join(__dirname, '../dist')));
 
+// Database
+mongoose.connect('mongodb://localhost:27017/users');
+
 // Set our api routes
-app.use('/api', api.router);
+ApiRegistry.init(app);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
