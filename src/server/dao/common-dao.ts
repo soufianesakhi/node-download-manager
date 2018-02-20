@@ -1,10 +1,5 @@
 import { Schema, SchemaDefinition } from "mongoose";
 
-export interface TimeStampedModel {
-    createdAt: Date;
-    updatedAt: Date;
-}
-
 export class TimeStampedSchema extends Schema {
     constructor(definition?: SchemaDefinition) {
         definition.createdAt = Date;

@@ -9,10 +9,13 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build-server": "tsc -p src/tsconfig.server.json",
     "watch-ng": "ng build --watch",
+    "build-server": "tsc -p src/tsconfig.server.json",
     "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server && title node && node dist-server/main\"",
-    "l": "start npm run watch-ng& start npm run watch-server&"
+    "build-ext": "tsc -p src/tsconfig.ext.json",
+    "watch-ext": "title \"tsc ext\" && tsc --watch -p src/tsconfig.ext.json",
+    "l": "start npm run watch-ng& start npm run watch-server&",
+    "le": "start npm run watch-ext&"
   },
   "private": true,
   "dependencies": {
@@ -46,6 +49,7 @@
     "@types/mongoose": "^5.0.2",
     "@types/node": "~6.0.60",
     "@types/node-notifier": "0.0.28",
+    "@types/jquery": "3.2.1",
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.8.0",
     "jasmine-spec-reporter": "~4.2.1",

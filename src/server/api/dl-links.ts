@@ -1,9 +1,10 @@
 import { MongoAPI } from "./mongo";
-import { DownloadLinksDAO, DownloadLinksModel, DownloadLinks } from "../dao/dl-links-dao";
+import { DownloadLinksDAO } from "../dao/dl-links-dao";
 import { Request, Response, Router } from 'express';
 import { handleError, notify } from "../util/utils";
+import { DownloadLinks, DownloadLinksModel } from "../../model/dl-links";
 
-export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
+export class DownloadLinksAPI extends MongoAPI<DownloadLinks> {
     constructor(router: Router, path: string) {
         super(router, DownloadLinksDAO, path);
         const appendLinksByIdPath = this.pathId(path + "/append");
@@ -17,7 +18,7 @@ export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
         }
         DownloadLinksDAO.findById(id)
             .then(links => {
-                const updatedLinks: DownloadLinks = req.body;
+                const updatedLinks: DownloadLinksModel = req.body;
                 links.links.push(...updatedLinks.links);
                 links.sources.push(...updatedLinks.sources);
                 new DownloadLinksDAO(links).save().then(doc => {

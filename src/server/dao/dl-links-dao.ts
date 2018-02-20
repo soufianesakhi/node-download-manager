@@ -1,18 +1,8 @@
 import { Document, model } from "mongoose";
-import { TimeStampedModel, TimeStampedSchema } from "./common-dao";
+import { TimeStampedSchema } from "./common-dao";
+import { DownloadLinks } from "../../model/dl-links";
 
-export interface DownloadLinks extends TimeStampedModel {
-    artist: string;
-    title: string;
-    links: string[][];
-    priority: number;
-    sources: string[];
-    sizeMB: number;
-}
-
-export interface DownloadLinksModel extends DownloadLinks, Document { }
-
-export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new TimeStampedSchema({
+export const DownloadLinksDAO = model<DownloadLinks>('DownloadLinks', new TimeStampedSchema({
     artist: String,
     title: {
         type: String,

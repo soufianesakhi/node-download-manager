@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "node-download-manager-connector",
+    "version": "0.1.0",
+    "icons": {
+        "115": "icon.png"
+    },
+    "permissions": [
+        "http://localhost/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.google.com/*"
+            ],
+            "js": [
+                "jquery.min.js",
+                "connector.js"
+            ]
+        }
+    ]
+}

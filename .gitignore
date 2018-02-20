@@ -3,6 +3,8 @@
 # compiled output
 /dist
 /dist-server
+/web-ext/*.js
+/web-ext/*.js.map
 /tmp
 /out-tsc
 

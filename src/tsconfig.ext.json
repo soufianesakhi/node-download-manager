@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../web-ext",
+    "sourceMap": false,
+    "baseUrl": "./",
+    "module": "es2015",
+    "lib": [
+      "es2015",
+      "dom"
+    ]
+  },
+  "include": [
+    "extension/**/*.ts"
+  ]
+}
