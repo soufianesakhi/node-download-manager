@@ -1,7 +1,4 @@
 import { Request, Response, Express, Router } from 'express';
-import { Connection } from 'mongoose';
-import * as express from 'express';
-import { MongoAPI } from './mongo';
 import { DownloadLinksAPI } from './dl-links';
 
 export class ApiRegistry {

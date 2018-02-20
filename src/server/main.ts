@@ -7,6 +7,14 @@ import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
 
+let dbUrl: string, downloadPath: string;
+[
+    dbUrl = 'mongodb://localhost:27017/users',
+    downloadPath = 'S:/Downloads'
+] = process.argv.slice(2);
+console.log("dbUrl: " + dbUrl);
+console.log("downloadPath: " + downloadPath);
+
 const app = express();
 
 // Parsers for POST data
@@ -17,7 +25,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Database
-mongoose.connect('mongodb://localhost:27017/users');
+mongoose.connect(dbUrl);
 
 // Set our api routes
 ApiRegistry.init(app);

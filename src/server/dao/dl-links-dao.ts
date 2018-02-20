@@ -1,4 +1,4 @@
-import { Document, Model, Schema, model } from "mongoose";
+import { Document, model } from "mongoose";
 import { TimeStampedModel, TimeStampedSchema } from "./common-dao";
 
 export interface DownloadLinks extends TimeStampedModel {
