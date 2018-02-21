@@ -17,6 +17,7 @@ export function handleError(err: Error | string, res: Response) {
     } else {
         msg = err;
     }
-    res.send('Error: ' + msg);
+    console.error(err);
     notify('Error', msg);
+    res.send('Error: ' + msg);
 }

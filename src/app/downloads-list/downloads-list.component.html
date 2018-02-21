@@ -1,0 +1,50 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+      <!--Sidebar content-->
+      <p>
+        Search:
+        <input [(ngModel)]="searchText">
+      </p>
+      <p>
+        Sort by:
+        <select [(ngModel)]="order">
+          <option value="dateCreated">dateCreated</option>
+          <option value="priority">priority</option>
+        </select>
+      </p>
+    </div>
+
+    <!-- All links -->
+    <div class="col-md-6">
+      <div *ngFor="let links of downloadLinks | downloadsFilter : searchText">
+        <button type="button" class="btn" [class.btn-light]="links._id !== selectedLinks._id" [class.btn-primary]="links._id === selectedLinks._id"
+          (click)="onSelect(links)" style="white-space: normal;">
+          {{ links.artist }} - {{links.title}}
+        </button>
+      </div>
+    </div>
+
+    <!-- Selected links details-->
+    <div *ngIf="selectedLinks" class="card col-md-4">
+      <div class="card-body">
+        <h5 class="card-title">{{selectedLinks._id}}</h5>
+        <div class="card-text">
+          <div *ngFor="let hostUrls of selectedLinks.links">
+            <div *ngFor="let url of hostUrls">
+              {{url}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
+        <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Priority: {{selectedLinks.priority}}</li>
+        <li class="list-group-item">Size: {{selectedLinks.sizeMB}} MB</li>
+      </ul>
+    </div>
+  </div>
+</div>
