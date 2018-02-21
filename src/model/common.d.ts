@@ -1,4 +1,6 @@
-export interface TimeStampedModel {
-    createdAt: Date;
-    updatedAt: Date;
+declare module "model" {
+    interface TimeStampedModel {
+        createdAt?: Date;
+        updatedAt?: Date;
+    }
 }

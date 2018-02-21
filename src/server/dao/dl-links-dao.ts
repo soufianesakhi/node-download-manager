@@ -1,8 +1,8 @@
 import { Document, model } from "mongoose";
 import { TimeStampedSchema } from "./common-dao";
-import { DownloadLinks } from "../../model/dl-links";
+import { DownloadLinksModel } from "../..";
 
-export const DownloadLinksDAO = model<DownloadLinks>('DownloadLinks', new TimeStampedSchema({
+export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new TimeStampedSchema({
     artist: String,
     title: {
         type: String,
@@ -14,5 +14,6 @@ export const DownloadLinksDAO = model<DownloadLinks>('DownloadLinks', new TimeSt
     },
     priority: Number,
     sources: [String],
+    previews: [String],
     sizeMB: Number
 }));
