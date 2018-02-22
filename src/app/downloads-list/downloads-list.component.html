@@ -1,32 +1,32 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2">
+
+    <!-- Search -->
+    <div class="col-md-12">
       <!--Sidebar content-->
-      <p>
-        Search:
+      <span>Search:
         <input [(ngModel)]="searchText">
-      </p>
-      <p>
-        Sort by:
+      </span>
+      <span>Sort by:
         <select [(ngModel)]="order">
           <option value="dateCreated">dateCreated</option>
           <option value="priority">priority</option>
         </select>
-      </p>
+      </span>
     </div>
 
     <!-- All links -->
-    <div class="col-md-6">
+    <div #allLinksContainer class="col-md-7">
       <div *ngFor="let links of downloadLinks | downloadsFilter : searchText">
-        <button type="button" class="btn" [class.btn-light]="links._id !== selectedLinks._id" [class.btn-primary]="links._id === selectedLinks._id"
-          (click)="onSelect(links)" style="white-space: normal;">
+        <span type="button" class="badge" [class.badge-light]="links._id !== selectedLinks._id" [class.badge-primary]="links._id === selectedLinks._id"
+          (click)="onSelect(links, $event, allLinksContainer)">
           {{ links.artist }} - {{links.title}}
-        </button>
+        </span>
       </div>
     </div>
 
     <!-- Selected links details-->
-    <div *ngIf="selectedLinks" class="card col-md-4">
+    <div *ngIf="selectedLinks" class="card col-md-5" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
       <div class="card-body">
         <h5 class="card-title">{{selectedLinks._id}}</h5>
         <div class="card-text">

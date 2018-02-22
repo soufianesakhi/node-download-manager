@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { DownloadLinksModel } from '../..';
 import { DownloadsService } from '../downloads.service';
 
@@ -10,6 +10,7 @@ import { DownloadsService } from '../downloads.service';
 export class DownloadsListComponent implements OnInit {
   downloadLinks: DownloadLinksModel[] = [];
   selectedLinks: DownloadLinksModel;
+  selectedLinksMarginTop = 0;
   searchText = "";
   order = "dateCreated";
 
@@ -24,7 +25,10 @@ export class DownloadsListComponent implements OnInit {
     });
   }
 
-  onSelect(selectedLinks: DownloadLinksModel) {
+  onSelect(selectedLinks: DownloadLinksModel, event: Event, allLinksContainer: Element) {
+    const selectedOffsetTop = (event.target as Element).getBoundingClientRect().top;
+    const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
+    this.selectedLinksMarginTop = selectedOffsetTop - containerOffsetTop;
     this.selectedLinks = selectedLinks;
   }
 }
