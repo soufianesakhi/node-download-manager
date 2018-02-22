@@ -33,6 +33,15 @@ export class DownloadsListComponent implements OnInit {
     this.selectedLinks = selectedLinks;
   }
 
+  deleteSelect() {
+    this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(l => {
+      this.removeFromArray(this.downloadLinks, this.selectedLinks);
+      this.selectedLinks = this.downloadLinks[0];
+    }, (error) => {
+      console.error(error);
+    });
+  }
+
   copyFullTitle() {
     this.copyText(this.selectedLinks.artist + " - " + this.selectedLinks.title);
   }
@@ -41,7 +50,14 @@ export class DownloadsListComponent implements OnInit {
     this.copyText(this.getAllLinks(this.selectedLinks));
   }
 
-  private copyText(text: string) {
+  public removeFromArray(arr: any[], e) {
+    const index = arr.indexOf(e);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+  }
+
+  public copyText(text: string) {
     const input = document.createElement("textarea");
     input.textContent = text;
     document.body.appendChild(input);

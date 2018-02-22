@@ -33,6 +33,7 @@
         <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
           <button type="button" class="btn btn-secondary card-link">Edit</button>
         </a>
+        <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">

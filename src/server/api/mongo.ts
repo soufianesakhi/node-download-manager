@@ -75,9 +75,8 @@ export class MongoAPI<D extends Document> {
             return handleError("Id not found in path: " + req.originalUrl, res);
         }
         this.Dao.findByIdAndRemove(id).then(() => {
-            const okMsg = id + " removed";
-            res.send(okMsg);
-            notify('Success', okMsg);
+            res.send(id);
+            notify('Success', id + " removed");
         }).catch(err => handleError(err, res));
     }
 

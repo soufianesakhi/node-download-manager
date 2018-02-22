@@ -16,6 +16,10 @@ export class DownloadsService {
     return this.http.get('/api/downloads/' + id).map<any, DownloadLinksModel>(res => res.json());
   }
 
+  deleteDownloadLinks(links: DownloadLinksModel) {
+    return this.http.delete('/api/downloads/' + links._id);
+  }
+
   postDownloadLinks(links: DownloadLinks) {
     return this.http.post('/api/downloads', links).map<any, DownloadLinksModel>(res => res.json());
   }
