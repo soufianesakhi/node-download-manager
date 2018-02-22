@@ -14,6 +14,7 @@ export class DownloadEditorComponent implements OnInit {
   add: boolean;
   id: string;
   links: DownloadLinks;
+  categories: string[];
   getAllLinks = this.downloadsService.getAllLinks;
 
   constructor(
@@ -23,6 +24,7 @@ export class DownloadEditorComponent implements OnInit {
     this.links = {
       title: "",
       links: [[""]],
+      category: "",
       priority: 1
     };
   }
@@ -38,6 +40,9 @@ export class DownloadEditorComponent implements OnInit {
       }, (error) => {
         alert("Invalid id: " + this.id);
       });
+    });
+    this.downloadsService.getCategories().subscribe(values => {
+      this.categories = values.map(v => v.value);
     });
     this.route.url.subscribe(url => {
       this.add = url[0].toString().startsWith("add-");
@@ -57,7 +62,9 @@ export class DownloadEditorComponent implements OnInit {
       serviceObservable = this.downloadsService.updateDownloadLinks(this.links);
     }
     serviceObservable.subscribe(l => {
-      alert("Saved" + (l._id ? ": " + l._id : ""));
+      if (l._id) {
+        alert(l._id);
+      }
     }, (error) => {
       alert("Error");
       console.error(error);

@@ -14,11 +14,10 @@
         <label for="priorityInput">Priority</label>
         <input class="form-control" name="priorityInput" [(ngModel)]="links.priority" type="number" min="1" required>
       </div>
-      <div *ngIf="false" class="form-group">
+      <div class="form-group">
         <label for="categoryInput">Category</label>
-        <select class="form-control" id="categoryInput">
-          <option>1</option>
-          <option>2</option>
+        <select class="form-control" name="categoryInput" [(ngModel)]="links.category">
+          <option *ngFor="let c of categories" [selected]="c === links.category">{{c}}</option>
         </select>
       </div>
       <div class="form-group">

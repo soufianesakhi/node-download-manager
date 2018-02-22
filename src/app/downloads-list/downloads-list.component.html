@@ -41,6 +41,7 @@
           <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
         </li>
         <li class="list-group-item">Id: {{selectedLinks._id}}</li>
+        <li class="list-group-item">Category: {{selectedLinks.category}}</li>
         <li class="list-group-item">Priority: {{selectedLinks.priority}}</li>
         <li class="list-group-item">Size: {{selectedLinks.sizeMB}} MB</li>
       </ul>

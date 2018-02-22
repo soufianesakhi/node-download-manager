@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { DownloadLinks, DownloadLinksModel } from '..';
+import { DownloadLinks, DownloadLinksModel, ValueModel } from '..';
 
 @Injectable()
 export class DownloadsService {
@@ -26,6 +26,10 @@ export class DownloadsService {
 
   updateDownloadLinks(links: DownloadLinks) {
     return this.http.put('/api/downloads', links).map<any, DownloadLinksModel>(res => res.json());
+  }
+
+  getCategories() {
+    return this.http.get('/api/categories').map<any, ValueModel[]>(res => res.json());
   }
 
   getAllLinks(selectedLinks: DownloadLinksModel) {

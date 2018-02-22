@@ -12,6 +12,7 @@ export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new T
         type: [[String]],
         required: true
     },
+    category: String,
     priority: Number,
     sources: [String],
     previews: [String],

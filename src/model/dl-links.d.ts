@@ -4,6 +4,7 @@ declare module "model" {
         artist?: string;
         title: string;
         links: string[][];
+        category: string;
         priority?: number;
         sources?: string[];
         previews?: string[];
