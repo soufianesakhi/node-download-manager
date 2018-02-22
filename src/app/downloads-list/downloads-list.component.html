@@ -28,23 +28,21 @@
     <!-- Selected links details-->
     <div *ngIf="selectedLinks" class="card col-md-5" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
       <div class="card-body">
-        <h5 class="card-title">{{selectedLinks._id}}</h5>
-        <div class="card-text">
-          <div *ngFor="let hostUrls of selectedLinks.links">
-            <div *ngFor="let url of hostUrls">
-              {{url}}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
-        <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
+        <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
+        <button (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
       </div>
       <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
+          <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
+        </li>
+        <li class="list-group-item">Id: {{selectedLinks._id}}</li>
         <li class="list-group-item">Priority: {{selectedLinks.priority}}</li>
         <li class="list-group-item">Size: {{selectedLinks.sizeMB}} MB</li>
       </ul>
+      <div class="card-body">
+        <textarea rows="2" cols="45" class="list-group-item">{{ getAllLinks(selectedLinks) }}</textarea>
+      </div>
     </div>
   </div>
 </div>
