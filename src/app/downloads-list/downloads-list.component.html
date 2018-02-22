@@ -20,7 +20,7 @@
       <div *ngFor="let links of downloadLinks | downloadsFilter : searchText">
         <span type="button" class="badge" [class.badge-light]="links._id !== selectedLinks._id" [class.badge-primary]="links._id === selectedLinks._id"
           (click)="onSelect(links, $event, allLinksContainer)">
-          {{ links.artist }} - {{links.title}}
+          {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
         </span>
       </div>
     </div>
@@ -30,6 +30,9 @@
       <div class="card-body">
         <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
         <button (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
+        <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
+          <button type="button" class="btn btn-secondary card-link">Edit</button>
+        </a>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">

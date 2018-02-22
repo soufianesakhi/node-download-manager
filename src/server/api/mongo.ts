@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { notify, handleError } from '../util/utils';
 import { Document, Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 export class MongoAPI<D extends Document> {
     private ID_PATH = "id";
@@ -9,6 +10,7 @@ export class MongoAPI<D extends Document> {
     init() {
         this.router.get(this.path, this.getAll.bind(this));
         this.router.post(this.path, this.post.bind(this));
+        this.router.put(this.path, this.update.bind(this));
         this.router.post(this.path + "/search", this.search.bind(this));
 
         const idPath = this.pathId(this.path);
@@ -28,6 +30,16 @@ export class MongoAPI<D extends Document> {
             notify('Success', doc);
         }).catch(err => handleError(err, res));
     }
+
+    update(req: Request, res: Response) {
+        this.preUpdate(req.body);
+        this.Dao.update({ _id: new ObjectId(req.body._id) }, req.body).then(doc => {
+            res.send(doc);
+            notify('Success', doc);
+        }).catch(err => handleError(err, res));
+    }
+
+    preUpdate(d: D) { }
 
     search(req: Request, res: Response) {
         let conditions = req.body;

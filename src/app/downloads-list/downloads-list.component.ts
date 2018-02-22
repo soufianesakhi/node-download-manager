@@ -13,6 +13,7 @@ export class DownloadsListComponent implements OnInit {
   selectedLinksMarginTop = 0;
   searchText = "";
   order = "dateCreated";
+  getAllLinks = this.downloadsService.getAllLinks;
 
   constructor(private downloadsService: DownloadsService) { }
 
@@ -30,12 +31,6 @@ export class DownloadsListComponent implements OnInit {
     const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
     this.selectedLinksMarginTop = selectedOffsetTop - containerOffsetTop;
     this.selectedLinks = selectedLinks;
-  }
-
-  getAllLinks(selectedLinks: DownloadLinksModel) {
-    const allLinks: string[] = [];
-    selectedLinks.links.forEach(l => allLinks.push(...l));
-    return allLinks.join("\r\n");
   }
 
   copyFullTitle() {

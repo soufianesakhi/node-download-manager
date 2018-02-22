@@ -8,11 +8,21 @@ import { AppComponent } from './app.component';
 import { DownloadsListComponent } from './downloads-list/downloads-list.component';
 import { DownloadsService } from './downloads.service';
 import { DownloadsFilterPipe } from './downloads-filter.pipe';
+import { DownloadEditorComponent } from './download-editor/download-editor.component';
 
 const appRoutes: Routes = [
   {
     path: 'downloads-list',
     component: DownloadsListComponent
+  }, {
+    path: 'add-downloads',
+    component: DownloadEditorComponent
+  }, {
+    path: 'edit-downloads',
+    component: DownloadEditorComponent
+  }, {
+    path: 'edit-downloads/:id',
+    component: DownloadEditorComponent
   }
 ];
 
@@ -20,7 +30,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     DownloadsListComponent,
-    DownloadsFilterPipe
+    DownloadsFilterPipe,
+    DownloadEditorComponent
   ],
   imports: [
     BrowserModule,

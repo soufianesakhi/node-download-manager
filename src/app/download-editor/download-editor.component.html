@@ -1,0 +1,31 @@
+<p>
+  <span *ngIf="!add && !id">
+    Enter id
+    <input type="text" [ngModel]="inputId">
+    <button>Submit</button>
+  </span>
+  <span *ngIf="add || id">
+    <form #f="ngForm" (ngSubmit)="onSubmit(f)" style="padding: 1% 5%" ngNativeValidate>
+      <div class="form-group">
+        <label for="fullTitleInput">Title</label>
+        <input class="form-control" name="fullTitleInput" [ngModel]="getFullTitle()" required>
+      </div>
+      <div class="form-group">
+        <label for="priorityInput">Priority</label>
+        <input class="form-control" name="priorityInput" [(ngModel)]="links.priority" type="number" min="1" required>
+      </div>
+      <div *ngIf="false" class="form-group">
+        <label for="categoryInput">Category</label>
+        <select class="form-control" id="categoryInput">
+          <option>1</option>
+          <option>2</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="linksInput">Links</label>
+        <textarea class="form-control" name="linksInput" rows="6" [ngModel]="getAllLinks(links)" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </span>
+</p>
