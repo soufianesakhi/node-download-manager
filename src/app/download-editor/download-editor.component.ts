@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { DownloadsService } from '../service/downloads.service';
+import { stringifyLinks, parseLinks } from '../utils/downloads-utils';
 
 @Component({
   selector: 'app-download-editor',
@@ -13,8 +14,7 @@ export class DownloadEditorComponent implements OnInit {
   add: boolean;
   id: string;
   links: DownloadLinks;
-  categories: string[];
-  getAllLinks = this.downloadsService.stringifyLinks;
+  getAllLinks = stringifyLinks;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,9 +29,6 @@ export class DownloadEditorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.downloadsService.getCategories().subscribe(values => {
-      this.categories = values.map(v => v.value);
-    });
     this.route.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.updateDownloadLinks();
@@ -88,7 +85,7 @@ export class DownloadEditorComponent implements OnInit {
   }
 
   setAllLinks(allLinks: string) {
-    this.links.links = this.downloadsService.parseLinks(allLinks);
+    this.links.links = parseLinks(allLinks);
   }
 
   stringifyArray(arr: string[]) {

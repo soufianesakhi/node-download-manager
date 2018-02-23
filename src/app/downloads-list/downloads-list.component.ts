@@ -1,6 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { DownloadLinksModel } from '../..';
 import { DownloadsService } from '../service/downloads.service';
+import { flatLinks, stringifyLinks, removeFromArray, copyText } from '../utils/downloads-utils';
 
 @Component({
   selector: 'app-downloads-list',
@@ -12,7 +13,7 @@ export class DownloadsListComponent implements OnInit {
   selectedLinksMarginTop = 0;
   fullTitle = "";
   order = "dateCreated";
-  getAllLinks = this.downloadsService.stringifyLinks;
+  flatLinks = flatLinks;
 
   constructor(private downloadsService: DownloadsService) { }
 
@@ -34,7 +35,7 @@ export class DownloadsListComponent implements OnInit {
 
   deleteSelect() {
     this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(l => {
-      this.removeFromArray(this.downloadLinks, this.selectedLinks);
+      removeFromArray(this.downloadLinks, this.selectedLinks);
       this.selectedLinks = this.downloadLinks[0];
     }, (error) => {
       console.error(error);
@@ -42,28 +43,10 @@ export class DownloadsListComponent implements OnInit {
   }
 
   copyFullTitle() {
-    this.copyText(this.selectedLinks.artist + " - " + this.selectedLinks.title);
+    copyText(this.selectedLinks.artist + " - " + this.selectedLinks.title);
   }
 
   copyAllLinks() {
-    this.copyText(this.getAllLinks(this.selectedLinks));
+    copyText(stringifyLinks(this.selectedLinks));
   }
-
-  public removeFromArray(arr: any[], e) {
-    const index = arr.indexOf(e);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-  }
-
-  public copyText(text: string) {
-    const input = document.createElement("textarea");
-    input.textContent = text;
-    document.body.appendChild(input);
-    input.select();
-    const successful = document.execCommand('copy');
-    input.remove();
-    alert(successful ? 'Copied' : 'Not copied');
-  }
-
 }

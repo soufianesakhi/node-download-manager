@@ -9,6 +9,7 @@ import { DownloadsListComponent } from './downloads-list/downloads-list.componen
 import { DownloadsFilterPipe } from './utils/downloads-filter.pipe';
 import { DownloadEditorComponent } from './download-editor/download-editor.component';
 import { DownloadsService } from './service/downloads.service';
+import { CategorySelectComponent } from './utils/category-select.component';
 
 const appRoutes: Routes = [
   {
@@ -31,7 +32,8 @@ const appRoutes: Routes = [
     AppComponent,
     DownloadsListComponent,
     DownloadsFilterPipe,
-    DownloadEditorComponent
+    DownloadEditorComponent,
+    CategorySelectComponent
   ],
   imports: [
     BrowserModule,

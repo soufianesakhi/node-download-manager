@@ -4,6 +4,9 @@
     <!-- Search -->
     <div class="col-md-12">
       <!--Sidebar content-->
+      <span>Category:
+        <app-category-select [(value)]="category"></app-category-select>
+      </span>
       <span>Search:
         <input [(ngModel)]="fullTitle">
       </span>
@@ -41,12 +44,14 @@
           <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
         </li>
         <li class="list-group-item">Id: {{selectedLinks._id}}</li>
-        <li class="list-group-item">Category: {{selectedLinks.category}}</li>
-        <li class="list-group-item">Priority: {{selectedLinks.priority}}</li>
-        <li class="list-group-item">Size: {{selectedLinks.sizeMB}} MB</li>
+        <li class="list-group-item">
+          Category: {{selectedLinks.category}} | Priority: {{selectedLinks.priority}} | Size: {{selectedLinks.sizeMB}} MB
+        </li>
       </ul>
       <div class="card-body">
-        <textarea rows="2" cols="45" class="list-group-item">{{ getAllLinks(selectedLinks) }}</textarea>
+        <div *ngFor="let url of flatLinks(selectedLinks)">
+          <a [href]="url" class="card-link">{{url}}</a>
+        </div>
       </div>
     </div>
   </div>
