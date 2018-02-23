@@ -1,30 +1,46 @@
 <p>
   <span *ngIf="!add && !id">
     Enter id
-    <input type="text" [ngModel]="inputId">
-    <button>Submit</button>
+    <input #inputId type="text">
+    <button (click)="submitId(inputId.value)">Submit</button>
   </span>
   <span *ngIf="add || id">
-    <form #f="ngForm" (ngSubmit)="onSubmit(f)" style="padding: 1% 5%" ngNativeValidate>
-      <div class="form-group">
-        <label for="fullTitleInput">Title</label>
-        <input class="form-control" name="fullTitleInput" [ngModel]="getFullTitle()" required>
+    <form (ngSubmit)="onSubmit()" style="padding: 1% 5%" ngNativeValidate>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="fullTitleInput">Title</label>
+          <input class="form-control" name="fullTitleInput" [ngModel]="getFullTitle()" (ngModelChange)="setFullTitle($event)" required>
+          <button type="submit" class="btn btn-primary" style="margin: 10% 40%;">Submit</button>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="linksInput">Links</label>
+          <textarea class="form-control" name="linksInput" rows="6" [ngModel]="getAllLinks(links)" (ngModelChange)="setAllLinks($event)"
+            required>
+          </textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="priorityInput">Priority</label>
-        <input class="form-control" name="priorityInput" [(ngModel)]="links.priority" type="number" min="1" required>
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <label for="priorityInput">Priority</label>
+          <input class="form-control" name="priorityInput" [(ngModel)]="links.priority" type="number" min="1" required>
+          <label for="sizeInput">Size (MB)</label>
+          <input class="form-control" name="sizeInput" [(ngModel)]="links.sizeMB" type="number">
+        </div>
+        <div class="form-group col-md-2">
+          <label for="categoryInput">Category</label>
+          <select class="form-control" name="categoryInput" [(ngModel)]="links.category">
+            <option *ngFor="let c of categories" [selected]="c === links.category">{{c}}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="sourcesInput">Sources</label>
+          <textarea class="form-control" name="sourcesInput" rows="2" [ngModel]="stringifyArray(links.sources)" (ngModelChange)="links.sources = parseArray($event)"></textarea>
+        </div>
+        <div class="form-group col-md-4">
+          <label for="previewsInput">Previews</label>
+          <textarea class="form-control" name="previewsInput" rows="2" [ngModel]="stringifyArray(links.previews)" (ngModelChange)="links.previews = parseArray($event)"></textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="categoryInput">Category</label>
-        <select class="form-control" name="categoryInput" [(ngModel)]="links.category">
-          <option *ngFor="let c of categories" [selected]="c === links.category">{{c}}</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="linksInput">Links</label>
-        <textarea class="form-control" name="linksInput" rows="6" [ngModel]="getAllLinks(links)" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </span>
 </p>

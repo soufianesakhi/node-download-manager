@@ -32,9 +32,39 @@ export class DownloadsService {
     return this.http.get('/api/categories').map<any, ValueModel[]>(res => res.json());
   }
 
-  getAllLinks(selectedLinks: DownloadLinksModel) {
+  stringifyLinks(selectedLinks: DownloadLinksModel) {
     const allLinks: string[] = [];
     selectedLinks.links.forEach(l => allLinks.push(...l));
-    return allLinks.join("\r\n");
+    return allLinks.join("\n");
+  }
+
+  parseLinks(txt: string) {
+    const linksArray: string[][] = [];
+    let hostArray: string[] = [];
+    let prevHostName = "";
+    txt.split("\n").forEach(link => {
+      const currentHostname = this.getHostName(link);
+      if (hostArray.length > 0 && prevHostName !== currentHostname) {
+        linksArray.push(hostArray);
+        hostArray = [];
+      }
+      const finalLink = link.trim();
+      if (finalLink !== "") {
+        hostArray.push(finalLink);
+      }
+      prevHostName = currentHostname;
+    });
+    if (hostArray.length > 0) {
+      linksArray.push(hostArray);
+    }
+    return linksArray;
+  }
+
+  getHostName(url) {
+    const l = document.createElement("a");
+    l.href = url;
+    const hostname = l.hostname;
+    l.remove();
+    return hostname;
   }
 }

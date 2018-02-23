@@ -15,15 +15,15 @@ export class DownloadEditorComponent implements OnInit {
   id: string;
   links: DownloadLinks;
   categories: string[];
-  getAllLinks = this.downloadsService.getAllLinks;
+  getAllLinks = this.downloadsService.stringifyLinks;
 
   constructor(
     private route: ActivatedRoute,
     private downloadsService: DownloadsService
   ) {
     this.links = {
-      title: "",
-      links: [[""]],
+      title: " - ",
+      links: [["\n"]],
       category: "",
       priority: 1
     };
@@ -32,14 +32,7 @@ export class DownloadEditorComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.id = params.get('id');
-      if (!this.id) {
-        return;
-      }
-      this.downloadsService.getDownloadLinks(this.id).subscribe(links => {
-        this.links = links;
-      }, (error) => {
-        alert("Invalid id: " + this.id);
-      });
+      this.updateDownloadLinks();
     });
     this.downloadsService.getCategories().subscribe(values => {
       this.categories = values.map(v => v.value);
@@ -49,12 +42,23 @@ export class DownloadEditorComponent implements OnInit {
     });
   }
 
-  onSubmit(f: NgForm) {
-    const artistAndTitle = f.value.fullTitleInput;
-    const iSep = artistAndTitle.indexOf("-");
-    this.links.artist = artistAndTitle.substring(0, iSep).trim();
-    this.links.title = artistAndTitle.substring(iSep + 1).trim();
-    this.links.links = this.getLinksArray(f.value.linksInput);
+  submitId(id: string) {
+    this.id = id;
+    this.updateDownloadLinks();
+  }
+
+  updateDownloadLinks() {
+    if (!this.id) {
+      return;
+    }
+    this.downloadsService.getDownloadLinks(this.id).subscribe(links => {
+      this.links = links;
+    }, (error) => {
+      alert("Invalid id: " + this.id);
+    });
+  }
+
+  onSubmit() {
     let serviceObservable: Observable<DownloadLinksModel>;
     if (this.add) {
       serviceObservable = this.downloadsService.postDownloadLinks(this.links);
@@ -78,34 +82,21 @@ export class DownloadEditorComponent implements OnInit {
     return this.links.title;
   }
 
-  getLinksArray(txt: string) {
-    const linksArray: string[][] = [];
-    let hostArray: string[] = [];
-    let prevHostName = "";
-    txt.split("\n").forEach(link => {
-      const currentHostname = this.getHostName(link);
-      if (hostArray.length > 0 && prevHostName !== currentHostname) {
-        linksArray.push(hostArray);
-        hostArray = [];
-      }
-      const finalLink = link.trim();
-      if (finalLink !== "") {
-        hostArray.push(finalLink);
-      }
-      prevHostName = currentHostname;
-    });
-    if (hostArray.length > 0) {
-      linksArray.push(hostArray);
-    }
-    return linksArray;
+  setFullTitle(artistAndTitle: string) {
+    const iSep = artistAndTitle.indexOf("-");
+    this.links.artist = artistAndTitle.substring(0, iSep).trim();
+    this.links.title = artistAndTitle.substring(iSep + 1).trim();
   }
 
-  getHostName(url) {
-    const l = document.createElement("a");
-    l.href = url;
-    const hostname = l.hostname;
-    l.remove();
-    return hostname;
+  setAllLinks(allLinks: string) {
+    this.links.links = this.downloadsService.parseLinks(allLinks);
   }
 
+  stringifyArray(arr: string[]) {
+    return arr ? arr.join("\n") : "";
+  }
+
+  parseArray(txt: string): string[] {
+    return txt.split("\n").map(s => s.trim()).filter(s => s !== "");
+  }
 }

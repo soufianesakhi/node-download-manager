@@ -13,7 +13,7 @@ export class DownloadsListComponent implements OnInit {
   selectedLinksMarginTop = 0;
   searchText = "";
   order = "dateCreated";
-  getAllLinks = this.downloadsService.getAllLinks;
+  getAllLinks = this.downloadsService.stringifyLinks;
 
   constructor(private downloadsService: DownloadsService) { }
 
