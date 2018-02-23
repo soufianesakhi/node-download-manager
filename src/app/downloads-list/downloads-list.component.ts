@@ -12,7 +12,8 @@ export class DownloadsListComponent implements OnInit {
   selectedLinks: DownloadLinksModel;
   selectedLinksMarginTop = 0;
   fullTitle = "";
-  order = "dateCreated";
+  order = "createdAt";
+  ascending = false;
   flatLinks = flatLinks;
 
   constructor(private downloadsService: DownloadsService) { }
@@ -20,9 +21,6 @@ export class DownloadsListComponent implements OnInit {
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
       this.downloadLinks = downloadLinks;
-      if (downloadLinks.length > 0) {
-        this.selectedLinks = downloadLinks[0];
-      }
     });
   }
 
@@ -31,6 +29,10 @@ export class DownloadsListComponent implements OnInit {
     const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
     this.selectedLinksMarginTop = selectedOffsetTop - containerOffsetTop;
     this.selectedLinks = selectedLinks;
+  }
+
+  isSelected(links: DownloadLinksModel) {
+    return this.selectedLinks && links._id === this.selectedLinks._id;
   }
 
   deleteSelect() {

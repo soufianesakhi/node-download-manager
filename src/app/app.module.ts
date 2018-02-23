@@ -11,6 +11,7 @@ import { DownloadEditorComponent } from './download-editor/download-editor.compo
 import { DownloadsService } from './service/downloads.service';
 import { CategorySelectComponent } from './utils/category-select.component';
 import { CategoryFilterPipe } from './utils/category-filter.pipe';
+import { SortPipe } from './utils/sort.pipe';
 
 const appRoutes: Routes = [
   {
@@ -35,7 +36,8 @@ const appRoutes: Routes = [
     FullTitleFilterPipe,
     DownloadEditorComponent,
     CategorySelectComponent,
-    CategoryFilterPipe
+    CategoryFilterPipe,
+    SortPipe
   ],
   imports: [
     BrowserModule,

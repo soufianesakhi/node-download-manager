@@ -12,17 +12,19 @@
       </span>
       <span>Sort by:
         <select [(ngModel)]="order">
-          <option value="dateCreated">dateCreated</option>
-          <option value="priority">priority</option>
+          <option value="createdAt">Created</option>
+          <option value="priority">Priority</option>
         </select>
+      </span>
+      <span>Ascending:
+        <input type="checkbox" [(ngModel)]="ascending">
       </span>
     </div>
 
     <!-- All links -->
     <div #allLinksContainer class="col-md-7">
-      <div *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle">
-        <span type="button" class="badge" [class.badge-light]="links._id !== selectedLinks._id" [class.badge-primary]="links._id === selectedLinks._id"
-          (click)="onSelect(links, $event, allLinksContainer)">
+      <div *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle | sort : order : ascending">
+        <span type="button" class="badge" [class.badge-light]="!isSelected(links)" [class.badge-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
         </span>
       </div>
@@ -43,9 +45,14 @@
           <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
           <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
         </li>
-        <li class="list-group-item">Id: {{selectedLinks._id}}</li>
         <li class="list-group-item">
-          Category: {{selectedLinks.category}} | Priority: {{selectedLinks.priority}} | Size: {{selectedLinks.sizeMB}} MB
+          <b>Id</b>: {{selectedLinks._id}}
+          <b>Category</b>: {{selectedLinks.category}}
+        </li>
+        <li class="list-group-item">
+          <b>Priority</b>: {{selectedLinks.priority}}
+          <b>Size</b>: {{selectedLinks.sizeMB}} MB
+          <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
         </li>
       </ul>
       <div class="card-body">
