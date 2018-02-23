@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DownloadLinks } from '..';
+import { DownloadLinks } from '../..';
 
 @Pipe({
-  name: 'downloadsFilter'
+  name: 'fullTitleFilter'
 })
 export class DownloadsFilterPipe implements PipeTransform {
 

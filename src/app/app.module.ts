@@ -6,9 +6,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { DownloadsListComponent } from './downloads-list/downloads-list.component';
-import { DownloadsService } from './downloads.service';
-import { DownloadsFilterPipe } from './downloads-filter.pipe';
+import { DownloadsFilterPipe } from './utils/downloads-filter.pipe';
 import { DownloadEditorComponent } from './download-editor/download-editor.component';
+import { DownloadsService } from './service/downloads.service';
 
 const appRoutes: Routes = [
   {

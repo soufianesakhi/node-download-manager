@@ -1,17 +1,16 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { DownloadLinksModel } from '../..';
-import { DownloadsService } from '../downloads.service';
+import { DownloadsService } from '../service/downloads.service';
 
 @Component({
   selector: 'app-downloads-list',
-  templateUrl: './downloads-list.component.html',
-  styleUrls: ['./downloads-list.component.css']
+  templateUrl: './downloads-list.component.html'
 })
 export class DownloadsListComponent implements OnInit {
   downloadLinks: DownloadLinksModel[] = [];
   selectedLinks: DownloadLinksModel;
   selectedLinksMarginTop = 0;
-  searchText = "";
+  fullTitle = "";
   order = "dateCreated";
   getAllLinks = this.downloadsService.stringifyLinks;
 

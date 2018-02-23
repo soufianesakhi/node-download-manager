@@ -5,7 +5,7 @@
     <div class="col-md-12">
       <!--Sidebar content-->
       <span>Search:
-        <input [(ngModel)]="searchText">
+        <input [(ngModel)]="fullTitle">
       </span>
       <span>Sort by:
         <select [(ngModel)]="order">
@@ -17,7 +17,7 @@
 
     <!-- All links -->
     <div #allLinksContainer class="col-md-7">
-      <div *ngFor="let links of downloadLinks | downloadsFilter : searchText">
+      <div *ngFor="let links of downloadLinks | fullTitleFilter : fullTitle">
         <span type="button" class="badge" [class.badge-light]="links._id !== selectedLinks._id" [class.badge-primary]="links._id === selectedLinks._id"
           (click)="onSelect(links, $event, allLinksContainer)">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}

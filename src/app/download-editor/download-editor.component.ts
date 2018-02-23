@@ -1,14 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DownloadLinksModel, DownloadLinks } from '../..';
 import { ActivatedRoute } from '@angular/router';
-import { DownloadsService } from '../downloads.service';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { DownloadsService } from '../service/downloads.service';
 
 @Component({
   selector: 'app-download-editor',
-  templateUrl: './download-editor.component.html',
-  styleUrls: ['./download-editor.component.css']
+  templateUrl: './download-editor.component.html'
 })
 export class DownloadEditorComponent implements OnInit {
   add: boolean;
@@ -30,12 +29,12 @@ export class DownloadEditorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.downloadsService.getCategories().subscribe(values => {
+      this.categories = values.map(v => v.value);
+    });
     this.route.paramMap.subscribe(params => {
       this.id = params.get('id');
       this.updateDownloadLinks();
-    });
-    this.downloadsService.getCategories().subscribe(values => {
-      this.categories = values.map(v => v.value);
     });
     this.route.url.subscribe(url => {
       this.add = url[0].toString().startsWith("add-");

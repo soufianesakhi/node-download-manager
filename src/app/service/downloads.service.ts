@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { DownloadLinks, DownloadLinksModel, ValueModel } from '..';
+import { DownloadLinks, DownloadLinksModel, ValueModel } from '../..';
 
 @Injectable()
 export class DownloadsService {
