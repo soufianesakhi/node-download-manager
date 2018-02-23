@@ -6,10 +6,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { DownloadsListComponent } from './downloads-list/downloads-list.component';
-import { DownloadsFilterPipe } from './utils/downloads-filter.pipe';
+import { FullTitleFilterPipe } from './utils/full-title-filter.pipe';
 import { DownloadEditorComponent } from './download-editor/download-editor.component';
 import { DownloadsService } from './service/downloads.service';
 import { CategorySelectComponent } from './utils/category-select.component';
+import { CategoryFilterPipe } from './utils/category-filter.pipe';
 
 const appRoutes: Routes = [
   {
@@ -31,9 +32,10 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     DownloadsListComponent,
-    DownloadsFilterPipe,
+    FullTitleFilterPipe,
     DownloadEditorComponent,
-    CategorySelectComponent
+    CategorySelectComponent,
+    CategoryFilterPipe
   ],
   imports: [
     BrowserModule,

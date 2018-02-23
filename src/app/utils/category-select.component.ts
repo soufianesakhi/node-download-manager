@@ -14,6 +14,8 @@ export class CategorySelectComponent implements OnInit {
   value: string;
   @Input()
   form: boolean;
+  @Input()
+  emptyFirst: boolean;
   @Output()
   valueChange = new EventEmitter<string>();
   categories: string[];
@@ -23,6 +25,9 @@ export class CategorySelectComponent implements OnInit {
   ngOnInit() {
     this.downloadsService.getCategories().subscribe(values => {
       this.categories = values.map(v => v.value);
+      if (this.emptyFirst) {
+        this.categories = [""].concat(this.categories);
+      }
     });
   }
 

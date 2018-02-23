@@ -60,10 +60,12 @@
       "inlineStyle": true
     },
     "pipe": {
-      "spec": false
+      "spec": false,
+      "flat": false
     },
     "service": {
-      "spec": false
+      "spec": false,
+      "flat": false
     },
     "module": {
       "spec": false

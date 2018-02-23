@@ -4,7 +4,7 @@ import { DownloadLinks } from '../..';
 @Pipe({
   name: 'fullTitleFilter'
 })
-export class DownloadsFilterPipe implements PipeTransform {
+export class FullTitleFilterPipe implements PipeTransform {
 
   transform(items: DownloadLinks[], searchText: string): any {
     if (!items) {
