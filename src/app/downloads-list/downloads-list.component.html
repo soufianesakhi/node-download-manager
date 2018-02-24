@@ -3,7 +3,6 @@
 
     <!-- Search -->
     <div class="col-md-12">
-      <!--Sidebar content-->
       <span>Category:
         <app-category-select [(value)]="category" [emptyFirst]="true"></app-category-select>
       </span>
@@ -22,12 +21,13 @@
     </div>
 
     <!-- All links -->
-    <div #allLinksContainer class="col-md-7">
-      <div *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle | sort : order : ascending">
-        <span type="button" class="badge" [class.badge-light]="!isSelected(links)" [class.badge-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)">
+    <div #allLinksContainer class="col-md-7 card">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle | sort : order : ascending"
+          [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
-        </span>
-      </div>
+        </li>
+      </ul>
     </div>
 
     <!-- Selected links details-->

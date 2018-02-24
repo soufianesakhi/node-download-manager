@@ -13,7 +13,6 @@ h1 {
     margin: 1%;
   }
   body, input[text], button {
-    color: #888;
     font-family: Cambria, Georgia;
   }
   a {
@@ -67,6 +66,7 @@ h1 {
   font-size: 100%;
   white-space: normal;
   cursor: pointer;
+  text-align: left;
 }
 
 .col-md-12 {
