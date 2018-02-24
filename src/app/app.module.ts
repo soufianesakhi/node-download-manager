@@ -13,7 +13,7 @@ import { CategorySelectComponent } from './utils/category-select.component';
 import { CategoryFilterPipe } from './utils/category-filter.pipe';
 import { SortPipe } from './utils/sort.pipe';
 
-const appRoutes: Routes = [
+export const appRoutes: Routes = [
   {
     path: 'downloads-list',
     component: DownloadsListComponent
