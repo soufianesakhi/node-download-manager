@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /dist-server
+/dist-parser
 /web-ext/*.js
 /web-ext/*.js.map
 /tmp

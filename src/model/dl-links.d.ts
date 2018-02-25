@@ -9,6 +9,7 @@ declare module "model" {
         sources?: string[];
         previews?: string[];
         sizeMB?: number;
+        comments?: string;
     }
     interface DownloadLinksModel extends DownloadLinks, Document { }
 }

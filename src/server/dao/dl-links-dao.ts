@@ -16,5 +16,6 @@ export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new T
     priority: Number,
     sources: [String],
     previews: [String],
-    sizeMB: Number
+    sizeMB: Number,
+    comments: String
 }));

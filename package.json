@@ -14,6 +14,7 @@
     "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server && title node && node dist-server/main\"",
     "build-ext": "tsc -p src/tsconfig.ext.json",
     "watch-ext": "title \"tsc ext\" && tsc --watch -p src/tsconfig.ext.json",
+    "watch-parser": "start tsc --watch -p src/tsconfig.parser.json",
     "l": "start npm run watch-ng& start npm run watch-server&",
     "le": "start npm run watch-ext&"
   },
@@ -35,6 +36,7 @@
     "node-notifier": "^5.2.1",
     "rxjs": "^5.5.6",
     "source-map-support": "^0.5.3",
+    "xlsx": "^0.12.2",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
