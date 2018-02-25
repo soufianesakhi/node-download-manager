@@ -18,12 +18,19 @@
       <span>Ascending:
         <input type="checkbox" [(ngModel)]="ascending">
       </span>
+      <span>Has Comments:
+        <select [(ngModel)]="checkComents">
+          <option value=""></option>
+          <option value="true">true</option>
+          <option value="false">false</option>
+        </select>
+      </span>
     </div>
 
     <!-- All links -->
     <div #allLinksContainer class="col-md-7 card">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle | sort : order : ascending"
+        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | hasComments : checkComents | fullTitleFilter : fullTitle | sort : order : ascending"
           [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)" style="max-height: 100px; overflow-y: hidden">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
         </li>
@@ -48,11 +55,18 @@
           </li>
           <li class="list-group-item">
             <b>Id</b>: {{selectedLinks._id}}
-            <b>Category</b>: {{selectedLinks.category}}
           </li>
           <li class="list-group-item">
+            <b>Category</b>: {{selectedLinks.category}}
             <b>Priority</b>: {{selectedLinks.priority}}
-            <b>Size</b>: {{selectedLinks.sizeMB}} MB
+          </li>
+          <li class="list-group-item">
+            <span *ngIf="selectedLinks.sizeMB">
+              <b>Size</b>: {{selectedLinks.sizeMB}} MB
+            </span>
+            <span *ngIf="selectedLinks.comments">
+              <b>Comments</b>: {{selectedLinks.comments}}
+            </span>
             <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
           </li>
         </ul>

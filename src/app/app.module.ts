@@ -12,6 +12,7 @@ import { DownloadsService } from './service/downloads.service';
 import { CategorySelectComponent } from './utils/category-select.component';
 import { CategoryFilterPipe } from './utils/category-filter.pipe';
 import { SortPipe } from './utils/sort.pipe';
+import { HasCommentsPipe } from './utils/has-comments.pipe';
 
 export const appRoutes: Routes = [
   {
@@ -37,7 +38,8 @@ export const appRoutes: Routes = [
     DownloadEditorComponent,
     CategorySelectComponent,
     CategoryFilterPipe,
-    SortPipe
+    SortPipe,
+    HasCommentsPipe
   ],
   imports: [
     BrowserModule,

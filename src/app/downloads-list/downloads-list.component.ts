@@ -14,6 +14,7 @@ export class DownloadsListComponent implements OnInit {
   fullTitle = "";
   order = "priority";
   ascending = true;
+  checkComents = "";
   flatLinks = flatLinks;
 
   constructor(private downloadsService: DownloadsService) { }
