@@ -26,6 +26,7 @@ export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
                 const updatedLinks: DownloadLinksModel = req.body;
                 links.links.push(...updatedLinks.links);
                 links.sources.push(...updatedLinks.sources);
+                links.previews.push(...updatedLinks.previews);
                 new DownloadLinksDAO(links).save().then(doc => {
                     res.send(doc);
                     notify('Success', doc.sources);
