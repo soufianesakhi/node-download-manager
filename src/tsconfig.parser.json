@@ -11,6 +11,7 @@
         "server/**/*.ts"
     ],
     "exclude": [
-        "**/*.spec.ts"
+        "**/*.spec.ts",
+        "server/main.ts"
     ]
 }

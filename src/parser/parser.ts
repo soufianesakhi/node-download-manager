@@ -38,7 +38,7 @@ function setFullTitle(downloadLinks: DownloadLinks) {
 }
 
 function initDownloadLinks(index: number): DownloadLinks {
-    const priority = Math.ceil((index + 1.0) / prioFactor);
+    const priority = Math.round(((index + 1.0) / prioFactor) * 100) / 100.0 + 1;
     return {
         title: "",
         links: [[]],
