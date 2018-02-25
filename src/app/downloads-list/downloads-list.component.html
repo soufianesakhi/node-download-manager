@@ -31,33 +31,35 @@
     </div>
 
     <!-- Selected links details-->
-    <div *ngIf="selectedLinks" class="card col-md-5" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
-      <div class="card-body">
-        <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
-        <button (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
-        <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
-          <button type="button" class="btn btn-secondary card-link">Edit</button>
-        </a>
-        <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
-          <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
-        </li>
-        <li class="list-group-item">
-          <b>Id</b>: {{selectedLinks._id}}
-          <b>Category</b>: {{selectedLinks.category}}
-        </li>
-        <li class="list-group-item">
-          <b>Priority</b>: {{selectedLinks.priority}}
-          <b>Size</b>: {{selectedLinks.sizeMB}} MB
-          <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
-        </li>
-      </ul>
-      <div class="card-body">
-        <div *ngFor="let url of flatLinks(selectedLinks)">
-          <a [href]="url" class="card-link">{{url}}</a>
+    <div *ngIf="selectedLinks" class="col-md-5">
+      <div class="card" [ngStyle]="{'margin-top.px': getSelectedLinksMarginTop()}">
+        <div class="card-body">
+          <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
+          <button (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
+          <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
+            <button type="button" class="btn btn-secondary card-link">Edit</button>
+          </a>
+          <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li *ngIf="hasMetaLinks()" class="list-group-item">
+            <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
+            <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
+          </li>
+          <li class="list-group-item">
+            <b>Id</b>: {{selectedLinks._id}}
+            <b>Category</b>: {{selectedLinks.category}}
+          </li>
+          <li class="list-group-item">
+            <b>Priority</b>: {{selectedLinks.priority}}
+            <b>Size</b>: {{selectedLinks.sizeMB}} MB
+            <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
+          </li>
+        </ul>
+        <div class="card-body">
+          <div *ngFor="let url of flatLinks(selectedLinks)">
+            <a [href]="url" class="card-link">{{url}}</a>
+          </div>
         </div>
       </div>
     </div>

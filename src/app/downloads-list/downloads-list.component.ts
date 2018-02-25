@@ -31,6 +31,10 @@ export class DownloadsListComponent implements OnInit {
     this.selectedLinks = selectedLinks;
   }
 
+  getSelectedLinksMarginTop() {
+    return Math.max(this.selectedLinksMarginTop - 150, 0);
+  }
+
   isSelected(links: DownloadLinksModel) {
     return this.selectedLinks && links._id === this.selectedLinks._id;
   }
@@ -42,6 +46,10 @@ export class DownloadsListComponent implements OnInit {
     }, (error) => {
       console.error(error);
     });
+  }
+
+  hasMetaLinks() {
+    return this.selectedLinks.sources.length > 0 && this.selectedLinks.previews.length;
   }
 
   copyFullTitle() {
