@@ -24,7 +24,7 @@
     <div #allLinksContainer class="col-md-7 card">
       <ul class="list-group list-group-flush">
         <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | fullTitleFilter : fullTitle | sort : order : ascending"
-          [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)">
+          [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)" style="max-height: 100px; overflow-y: hidden">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
         </li>
       </ul>

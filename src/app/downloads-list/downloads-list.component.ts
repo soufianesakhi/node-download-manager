@@ -12,8 +12,8 @@ export class DownloadsListComponent implements OnInit {
   selectedLinks: DownloadLinksModel;
   selectedLinksMarginTop = 0;
   fullTitle = "";
-  order = "createdAt";
-  ascending = false;
+  order = "priority";
+  ascending = true;
   flatLinks = flatLinks;
 
   constructor(private downloadsService: DownloadsService) { }
