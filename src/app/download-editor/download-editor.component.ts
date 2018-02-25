@@ -24,7 +24,8 @@ export class DownloadEditorComponent implements OnInit {
       title: " - ",
       links: [["\n"]],
       category: "",
-      priority: 1
+      priority: 1,
+      createdAt: new Date()
     };
   }
 
