@@ -25,16 +25,18 @@
           <option value="false">false</option>
         </select>
       </span>
+      <span> ({{filterMetadata.count + ' of ' + downloadLinks.length}})</span>
     </div>
 
     <!-- All links -->
     <div #allLinksContainer class="col-md-7 card">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | hasComments : checkComents | fullTitleFilter : fullTitle | sort : order : ascending"
+        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | hasComments : checkComents | fullTitleFilter : fullTitle : filterMetadata | sort : order : ascending"
           [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)" style="max-height: 100px; overflow-y: hidden">
           {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
         </li>
       </ul>
+      <span *ngIf="filterMetadata.count === 0" style="text-align: center">No title found</span>
     </div>
 
     <!-- Selected links details-->

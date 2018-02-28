@@ -16,6 +16,7 @@ export class DownloadsListComponent implements OnInit {
   ascending = true;
   checkComents = "";
   flatLinks = flatLinks;
+  filterMetadata = { count: 0 };
 
   constructor(private downloadsService: DownloadsService) { }
 

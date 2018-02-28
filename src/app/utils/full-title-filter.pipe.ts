@@ -6,21 +6,26 @@ import { DownloadLinks } from '../..';
 })
 export class FullTitleFilterPipe implements PipeTransform {
 
-  transform(items: DownloadLinks[], searchText: string): any {
+  transform(items: DownloadLinks[], searchText: string, filterMetadata): DownloadLinks[] {
+
     if (!items) {
+      filterMetadata.count = 0;
       return [];
     }
     if (!searchText) {
+      filterMetadata.count = items.length;
       return items;
     }
     searchText = searchText.toLowerCase();
     const searched = searchText.split("&&");
-    return items.filter(it => {
+    const filteredItems = items.filter(it => {
       return searched.every(txt => {
         txt = txt.trim();
         return this.includes(it.artist, txt) || this.includes(it.title, txt);
       });
     });
+    filterMetadata.count = filteredItems.length;
+    return filteredItems;
   }
 
   includes(text: string, searchText: string) {
