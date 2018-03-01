@@ -7,6 +7,7 @@ import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
 import { WebSocketManager } from './websocket';
+import { registerSPI } from './spi';
 
 let dbUrl: string, downloadPath: string;
 [
@@ -65,3 +66,5 @@ const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));
 const webSocketManager = new WebSocketManager(server);
 apiRegistry.setWebSocketManager(webSocketManager);
+
+registerSPI(app);
