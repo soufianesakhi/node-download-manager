@@ -42,6 +42,11 @@ process.on('uncaughtException', (err: Error) => {
     });
 });
 
+process.on('SIGINT', () => {
+    console.log("Server shut down");
+    process.exit(0);
+});
+
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
