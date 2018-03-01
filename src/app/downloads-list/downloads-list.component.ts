@@ -12,8 +12,8 @@ export class DownloadsListComponent implements OnInit {
   selectedLinks: DownloadLinksModel;
   selectedLinksMarginTop = 0;
   fullTitle = "";
-  order = "priority";
-  ascending = true;
+  order = "createdAt";
+  ascending = false;
   checkComents = "";
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
