@@ -26,7 +26,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../dist')));
 
 // Database
-mongoose.connect(dbUrl);
+let maxRetryMongo = 3;
+function tryConnectMongo() {
+    mongoose.connect(dbUrl).catch(reason => {
+        if (maxRetryMongo-- === 0) {
+            console.error(reason);
+            process.exit(-1);
+        }
+        console.error(reason + ", retrying after 1s ...");
+        setTimeout(tryConnectMongo, 1000);
+    });
+}
+tryConnectMongo();
 
 // Set our api routes
 const apiRegistry = new ApiRegistry(app);
