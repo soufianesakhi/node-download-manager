@@ -9,13 +9,14 @@ import { notify } from './util/utils';
 import { WebSocketManager } from './websocket';
 import { registerSPI } from './spi';
 
-let dbUrl: string, downloadPath: string;
+let dbUrl: string;
+export let downloadDirectory: string;
 [
     dbUrl = 'mongodb://localhost:27017/users',
-    downloadPath = 'S:/Downloads'
+    downloadDirectory = 'S:/Downloads'
 ] = process.argv.slice(2);
-console.log("dbUrl: " + dbUrl);
-console.log("downloadPath: " + downloadPath);
+console.log("DB url:", dbUrl);
+console.log("Download directory:", downloadDirectory);
 
 const app = express();
 
@@ -43,6 +44,9 @@ tryConnectMongo();
 // Set our api routes
 const apiRegistry = new ApiRegistry(app);
 
+// Register spi (user defined modules)
+registerSPI(app);
+
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../dist/index.html'));
@@ -66,5 +70,3 @@ const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));
 const webSocketManager = new WebSocketManager(server);
 apiRegistry.setWebSocketManager(webSocketManager);
-
-registerSPI(app);

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { DownloadLinksModel } from '../..';
+import { DownloadLinksModel, DownloadSPI } from '../..';
 import { DownloadsService } from '../service/downloads.service';
 import { flatLinks, stringifyLinks, removeFromArray, copyText } from '../utils/downloads-utils';
 
@@ -17,6 +17,7 @@ export class DownloadsListComponent implements OnInit {
   checkComents = "";
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
+  downloadSupported: boolean;
 
   constructor(private downloadsService: DownloadsService) { }
 
@@ -28,6 +29,9 @@ export class DownloadsListComponent implements OnInit {
       this.downloadLinks.splice(0, 0, links);
       this.filterMetadata.count++;
       this.selectedLinks = links;
+    });
+    this.downloadsService.getDownloadSPI().subscribe(spi => {
+      this.downloadSupported = spi.supported;
     });
   }
 
@@ -53,6 +57,12 @@ export class DownloadsListComponent implements OnInit {
       this.filterMetadata.count--;
     }, (error) => {
       console.error(error);
+    });
+  }
+
+  downloadSelect() {
+    this.downloadsService.downloadLinks(this.selectedLinks).subscribe(() => {
+      console.log("Download submitted");
     });
   }
 
