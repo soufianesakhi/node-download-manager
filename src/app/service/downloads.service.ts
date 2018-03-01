@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { DownloadLinks, DownloadLinksModel, ValueModel } from '../..';
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class DownloadsService {
-
-  constructor(private http: Http) { }
+  newDownloadLinksSubject: Subject<DownloadLinksModel>;
+  constructor(private http: Http) {
+    this.newDownloadLinksSubject = new Subject();
+    this.startWebSocketConnection();
+  }
 
   getAllDownloadLinks() {
     return this.http.get('/api/downloads').map<any, DownloadLinksModel[]>(res => res.json());
@@ -30,6 +34,20 @@ export class DownloadsService {
 
   getCategories() {
     return this.http.get('/api/categories').map<any, ValueModel[]>(res => res.json());
+  }
+
+  startWebSocketConnection() {
+    const client = new WebSocket("ws://" + window.location.host);
+    client.onmessage = (e) => {
+      this.newDownloadLinksSubject.next(JSON.parse(e.data));
+    };
+    client.onerror = (e) => { console.log('WebSocket Connection Error', e); };
+    client.onopen = () => { console.log('WebSocket Client Connected'); };
+    client.onclose = () => { console.log('WebSocket Client Closed'); };
+  }
+
+  newDownloadLinksSubscribe(callback: (data: DownloadLinksModel) => void) {
+    this.newDownloadLinksSubject.subscribe(callback);
   }
 
 }

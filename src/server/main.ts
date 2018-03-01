@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
+import { WebSocketManager } from './websocket';
 
 let dbUrl: string, downloadPath: string;
 [
@@ -28,7 +29,7 @@ app.use(express.static(path.join(__dirname, '../dist')));
 mongoose.connect(dbUrl);
 
 // Set our api routes
-ApiRegistry.init(app);
+const apiRegistry = new ApiRegistry(app);
 
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
@@ -44,4 +45,7 @@ process.on('uncaughtException', (err: Error) => {
 const port = process.env.PORT || '3000';
 app.set('port', port);
 
-http.createServer(app).listen(port, () => console.log(`Running on localhost:${port}`));
+const server = http.createServer(app);
+server.listen(port, () => console.log(`Running on localhost:${port}`));
+const webSocketManager = new WebSocketManager(server);
+apiRegistry.setWebSocketManager(webSocketManager);

@@ -24,6 +24,11 @@ export class DownloadsListComponent implements OnInit {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
       this.downloadLinks = downloadLinks;
     });
+    this.downloadsService.newDownloadLinksSubscribe(links => {
+      this.downloadLinks.splice(0, 0, links);
+      this.filterMetadata.count++;
+      this.selectedLinks = links;
+    });
   }
 
   onSelect(selectedLinks: DownloadLinksModel, event: Event, allLinksContainer: Element) {
@@ -45,6 +50,7 @@ export class DownloadsListComponent implements OnInit {
     this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(l => {
       removeFromArray(this.downloadLinks, this.selectedLinks);
       this.selectedLinks = this.downloadLinks[0];
+      this.filterMetadata.count--;
     }, (error) => {
       console.error(error);
     });

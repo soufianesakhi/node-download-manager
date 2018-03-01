@@ -3,22 +3,25 @@ import { DownloadLinksAPI } from './dl-links';
 import { ValueModel } from '../..';
 import { MongoAPI } from './mongo';
 import { getValueDAO } from '../dao/value-dao';
+import { WebSocketManager } from '../websocket';
 
 export class ApiRegistry {
     private router = Router();
+    private downloadLinksAPI: DownloadLinksAPI;
 
-    private constructor() {
+    constructor(app: Express) {
         this.router.get('/', this.get);
-        new DownloadLinksAPI(this.router, '/downloads').init();
+        this.downloadLinksAPI = new DownloadLinksAPI(this.router, '/downloads');
+        this.downloadLinksAPI.init();
         new MongoAPI<ValueModel>(this.router, getValueDAO("Category"), '/categories').init();
-    }
-
-    public static init(app: Express) {
-        const registry = new ApiRegistry();
-        app.use('/api', registry.router);
+        app.use('/api', this.router);
     }
 
     private get(req: Request, res: Response) {
         res.send('api works');
+    }
+
+    public setWebSocketManager(manager: WebSocketManager) {
+        this.downloadLinksAPI.setWebSocketManager(manager);
     }
 }

@@ -27,9 +27,12 @@ export class MongoAPI<D extends Document> {
     post(req: Request, res: Response) {
         new this.Dao(req.body).save().then(doc => {
             res.send(doc);
-            notify('Success', doc);
+            this.postSuccessCallback(doc);
+            notify('Success', doc._id + " created");
         }).catch(err => handleError(err, res));
     }
+
+    postSuccessCallback(doc: Document) { }
 
     update(req: Request, res: Response) {
         this.preUpdate(req.body);

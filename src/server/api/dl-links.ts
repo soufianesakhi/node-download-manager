@@ -4,16 +4,26 @@ import { Request, Response, Router } from 'express';
 import { handleError, notify } from "../util/utils";
 import { DownloadLinks, DownloadLinksModel } from "../..";
 import { preUpdateTimeStaped } from "../dao/common-dao";
+import { WebSocketManager } from "../websocket";
 
 export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
+    webSocketManager: WebSocketManager;
     constructor(router: Router, path: string) {
         super(router, DownloadLinksDAO, path);
         const appendLinksByIdPath = this.pathId(path + "/append");
         router.post(appendLinksByIdPath, this.appendLinksById.bind(this));
     }
 
+    public setWebSocketManager(manager: WebSocketManager) {
+        this.webSocketManager = manager;
+    }
+
     preUpdate(d: DownloadLinksModel) {
         preUpdateTimeStaped(null, d);
+    }
+
+    postSuccessCallback(d: DownloadLinksModel) {
+        this.webSocketManager.sendMessage(JSON.stringify(d));
     }
 
     appendLinksById(req: Request, res: Response) {
