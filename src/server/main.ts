@@ -29,14 +29,17 @@ app.use(express.static(path.join(__dirname, '../dist')));
 
 // Database
 let maxRetryMongo = 3;
+let secToWait = 1;
+const secToWaitIncr = 2;
 function tryConnectMongo() {
     mongoose.connect(dbUrl).catch(reason => {
         if (maxRetryMongo-- === 0) {
             console.error(reason);
             process.exit(-1);
         }
-        console.error(reason + ", retrying after 1s ...");
-        setTimeout(tryConnectMongo, 1000);
+        console.error(`Mongo db connection failed. Retrying after ${secToWait}s ...`);
+        setTimeout(tryConnectMongo, secToWait * 1000);
+        secToWait += secToWaitIncr;
     });
 }
 tryConnectMongo();
