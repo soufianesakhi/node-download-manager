@@ -8,9 +8,10 @@ import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
 import { WebSocketManager } from './service/websocket';
 import { registerSPI } from './spi';
+import { DownloadManager } from './service/download';
 
 let dbUrl: string;
-export let downloadDirectory: string;
+let downloadDirectory: string;
 [
     dbUrl = 'mongodb://localhost:27017/users',
     downloadDirectory = 'S:/Downloads'
@@ -73,3 +74,5 @@ const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));
 const webSocketManager = new WebSocketManager(server);
 apiRegistry.setWebSocketManager(webSocketManager);
+
+export const downloadManager = new DownloadManager(webSocketManager, downloadDirectory);
