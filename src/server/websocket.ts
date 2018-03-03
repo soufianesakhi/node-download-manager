@@ -13,6 +13,9 @@ export class WebSocketManager {
     }
 
     onConnect(clientConnection: connection) {
+        if (this.clientConnection) {
+            return;
+        }
         this.clientConnection = clientConnection;
     }
 
