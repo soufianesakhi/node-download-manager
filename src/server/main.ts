@@ -6,7 +6,7 @@ import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
-import { WebSocketManager } from './websocket';
+import { WebSocketManager } from './service/websocket';
 import { registerSPI } from './spi';
 
 let dbUrl: string;

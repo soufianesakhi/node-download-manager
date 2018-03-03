@@ -12,4 +12,14 @@ declare module "model" {
         comments?: string;
     }
     interface DownloadLinksModel extends DownloadLinks, Document { }
+
+    interface DownloadProgress {
+        // TODO
+    }
+
+    interface DownloadLinksWSMessage {
+        channel: "new" | "progress";
+        data: any;
+    }
+
 }

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import { DownloadLinks, DownloadLinksModel, ValueModel, DownloadSPI } from '../..';
+import { DownloadLinks, DownloadLinksModel, ValueModel, DownloadSPI, DownloadLinksWSMessage, DownloadProgress } from '../..';
 import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class DownloadsService {
   spi: DownloadSPI;
-  newDownloadLinksSubject: Subject<DownloadLinksModel>;
+  newDownloadLinksSubject = new Subject<DownloadLinksModel>();
+  downloadProgressSubject = new Subject<DownloadProgress>();
   constructor(private http: Http) {
-    this.newDownloadLinksSubject = new Subject();
     this.startWebSocketConnection();
     this.getDownloadSPI().subscribe(spi => {
       this.spi = spi;
@@ -43,7 +43,13 @@ export class DownloadsService {
   startWebSocketConnection() {
     const client = new WebSocket("ws://" + window.location.host);
     client.onmessage = (e) => {
-      this.newDownloadLinksSubject.next(JSON.parse(e.data));
+      const message: DownloadLinksWSMessage = JSON.parse(e.data);
+      const channel = message.channel;
+      if (channel === "new") {
+        this.newDownloadLinksSubject.next(message.data);
+      } else if (channel === "progress") {
+        this.downloadProgressSubject.next(message.data);
+      }
     };
     client.onerror = (e) => { console.log('WebSocket Connection Error', e); };
     client.onopen = () => { console.log('WebSocket Client Connected'); };
@@ -52,6 +58,10 @@ export class DownloadsService {
 
   newDownloadLinksSubscribe(callback: (data: DownloadLinksModel) => void) {
     this.newDownloadLinksSubject.subscribe(callback);
+  }
+
+  downloadProgressSubscribe(callback: (data: DownloadProgress) => void) {
+    this.downloadProgressSubject.subscribe(callback);
   }
 
   getDownloadSPI() {

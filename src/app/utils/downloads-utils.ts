@@ -54,5 +54,7 @@ export function copyText(text: string) {
     input.select();
     const successful = document.execCommand('copy');
     input.remove();
-    alert(successful ? 'Copied' : 'Not copied');
+    if (!successful) {
+        alert('Not copied');
+    }
 }

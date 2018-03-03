@@ -4,7 +4,7 @@ import { Request, Response, Router } from 'express';
 import { handleError, notify } from "../util/utils";
 import { DownloadLinks, DownloadLinksModel } from "../..";
 import { preUpdateTimeStaped } from "../dao/common-dao";
-import { WebSocketManager } from "../websocket";
+import { WebSocketManager } from "../service/websocket";
 
 export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
     webSocketManager: WebSocketManager;
@@ -22,8 +22,11 @@ export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
         preUpdateTimeStaped(null, d);
     }
 
-    postSuccessCallback(d: DownloadLinksModel) {
-        this.webSocketManager.sendMessage(JSON.stringify(d));
+    postSuccessCallback(links: DownloadLinksModel) {
+        this.webSocketManager.sendMessage({
+            channel: "new",
+            data: links
+        });
     }
 
     appendLinksById(req: Request, res: Response) {

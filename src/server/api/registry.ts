@@ -3,7 +3,7 @@ import { DownloadLinksAPI } from './dl-links';
 import { ValueModel } from '../..';
 import { MongoAPI } from './mongo';
 import { getValueDAO } from '../dao/value-dao';
-import { WebSocketManager } from '../websocket';
+import { WebSocketManager } from '../service/websocket';
 
 export class ApiRegistry {
     private router = Router();
