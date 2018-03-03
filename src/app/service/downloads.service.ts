@@ -7,8 +7,8 @@ import { Subject } from 'rxjs/Subject';
 @Injectable()
 export class DownloadsService {
   spi: DownloadSPI;
-  newDownloadLinksSubject = new Subject<DownloadLinksModel>();
-  downloadProgressSubject = new Subject<DownloadProgress>();
+  private newDownloadLinksSubject = new Subject<DownloadLinksModel>();
+  private downloadProgressSubject = new Subject<DownloadProgress>();
   constructor(private http: Http) {
     this.startWebSocketConnection();
     this.getDownloadSPI().subscribe(spi => {

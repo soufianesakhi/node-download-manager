@@ -1,0 +1,28 @@
+<div class="container-fluid download-progress-container">
+  <div class="row">
+    <div *ngIf="progressArray.length === 0" class="card col-md-5" style="text-align: center">
+      No download in progress
+    </div>
+    <div *ngFor="let progress of progressArray" class="card col-md-5">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{progress.fileName}}</li>
+        <li class="list-group-item">
+          <div class="progress">
+            <div class="progress-bar" [style.width.%]="progress.percent" [class.bg-success]="progress.percent === 100">
+              {{progress.percent}}%
+            </div>
+          </div>
+        </li>
+        <li *ngIf="progress.remainingSize !== 0" class="list-group-item">
+          Speed:
+          <span class="badge badge-pill badge-secondary">{{progress.speed}} MB/s</span>
+        </li>
+        <li *ngIf="progress.remainingSize !== 0" class="list-group-item">
+          Remaining:
+          <span class="badge badge-pill badge-secondary">{{progress.remainingTime}} sec</span>
+          <span class="badge badge-pill badge-secondary">{{progress.remainingSize}} MB</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -23,10 +23,12 @@ export class DownloadManager {
             throttle: 1000, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
-                percent: state.percent * 100,
-                speed: state.speed / 1e6,
-                remainingTime: state.time.remaining,
-                remainingSize: (state.size.total - state.size.transferred) / 1e6
+                id: links._id,
+                fileName: fileName,
+                percent: this.format(state.percent * 100),
+                speed: this.format(state.speed / 1e6),
+                remainingTime: this.format(state.time.remaining),
+                remainingSize: this.format((state.size.total - state.size.transferred) / 1e6)
             };
             this.webSocketManager.sendMessage({
                 channel: "progress",
@@ -38,6 +40,8 @@ export class DownloadManager {
             this.appendLog("error", fileName + " -  " + err);
         }).on('end', () => {
             const p: DownloadProgress = {
+                id: links._id,
+                fileName: fileName,
                 percent: 100,
                 speed: 0,
                 remainingTime: 0,
@@ -50,6 +54,10 @@ export class DownloadManager {
             endCallback();
             this.appendLog("end", fileName);
         }).pipe(fs.createWriteStream(downloadFileDestination));
+    }
+
+    format(n: number) {
+        return +Number(n).toFixed(2);
     }
 
     private appendLog(category: string, txt: string) {

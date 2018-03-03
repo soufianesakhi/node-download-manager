@@ -72,3 +72,16 @@ h1 {
 .col-md-12 {
   padding: 10px;
 }
+
+.download-progress-container .card {
+  margin: 20px;
+}
+
+.download-progress-container .progress {
+  height: 1.5rem;
+  font-size: 1rem;
+}
+
+.download-progress-container .badge {
+  font-size: 0.75rem;
+}

@@ -13,6 +13,7 @@ import { CategorySelectComponent } from './utils/category-select.component';
 import { CategoryFilterPipe } from './utils/category-filter.pipe';
 import { SortPipe } from './utils/sort.pipe';
 import { HasCommentsPipe } from './utils/has-comments.pipe';
+import { DownloadProgressComponent } from './download-progress/download-progress.component';
 
 export const appRoutes: Routes = [
   {
@@ -27,6 +28,9 @@ export const appRoutes: Routes = [
   }, {
     path: 'edit-downloads/:id',
     component: DownloadEditorComponent
+  }, {
+    path: 'download-progress',
+    component: DownloadProgressComponent
   }
 ];
 
@@ -39,7 +43,8 @@ export const appRoutes: Routes = [
     CategorySelectComponent,
     CategoryFilterPipe,
     SortPipe,
-    HasCommentsPipe
+    HasCommentsPipe,
+    DownloadProgressComponent
   ],
   imports: [
     BrowserModule,

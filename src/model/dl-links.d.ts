@@ -14,10 +14,12 @@ declare module "model" {
     interface DownloadLinksModel extends DownloadLinks, Document { }
 
     interface DownloadProgress {
+        id: number;
+        fileName: string;
         percent: number; // Between 0 and 100
         speed: number; // Mega Bytes per second
         remainingTime: number; // Seconds
-        remainingSize; // Mega Bytes
+        remainingSize: number; // Mega Bytes
     }
 
     interface DownloadLinksWSMessage {
