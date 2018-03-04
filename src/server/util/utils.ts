@@ -10,7 +10,7 @@ export function notify(title: string, message: any, callback?: notifier.Notifica
     }, callback);
 }
 
-export function handleError(err: Error | string, res: Response) {
+export function handleError(err: Error | string, res?: Response) {
     let msg;
     if (err instanceof Error) {
         msg = err.message;
@@ -19,5 +19,7 @@ export function handleError(err: Error | string, res: Response) {
     }
     console.error(err);
     notify('Error', msg);
-    res.sendStatus(400);
+    if (res) {
+        res.sendStatus(400);
+    }
 }

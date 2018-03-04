@@ -14,13 +14,13 @@ export class DownloadManager {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
     }
 
-    download(directDownloadURI: string, extension: string, links: DownloadLinksModel, endCallback: Function) {
+    download(directDownloadURI: string, extension: string, links: DownloadLinksModel, endCallback: (finalFilePath: string) => void) {
         let fileName = links.artist;
         fileName += (fileName ? " - " : "") + links.title + extension;
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
         this.appendLog("start", fileName);
         progress(request(directDownloadURI), {
-            throttle: 1000, // Progress event interval (ms)
+            throttle: 100, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
                 id: links._id,
@@ -51,7 +51,7 @@ export class DownloadManager {
                 channel: "progress",
                 data: p
             });
-            endCallback();
+            endCallback(downloadFileDestination);
             this.appendLog("end", fileName);
         }).pipe(fs.createWriteStream(downloadFileDestination));
     }

@@ -33,7 +33,10 @@ function loadSPIModules(fullSPIPath: string, app: Express, router: Router) {
                     .forEach(filePath => loadSPIModules(filePath, app, router));
             });
         } else {
-            require(fullSPIPath)(app, metadata, router);
+            const module = require(fullSPIPath);
+            if (typeof module === "function") {
+                module(app, metadata, router);
+            }
         }
     });
 }

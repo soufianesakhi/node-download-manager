@@ -28,7 +28,9 @@ export class CategorySelectComponent implements OnInit {
       if (this.emptyFirst) {
         this.categories = [""].concat(this.categories);
       } else {
-        this.change(this.categories[0]);
+        if (!this.value) {
+          this.change(this.categories[0]);
+        }
       }
     });
   }
