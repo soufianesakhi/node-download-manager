@@ -2,6 +2,7 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { DownloadLinksModel, DownloadSPI } from '../..';
 import { DownloadsService } from '../service/downloads.service';
 import { flatLinks, stringifyLinks, removeFromArray, copyText } from '../utils/downloads-utils';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-downloads-list',
@@ -19,7 +20,8 @@ export class DownloadsListComponent implements OnInit {
   filterMetadata = { count: 0 };
   downloadSupported: boolean;
 
-  constructor(private downloadsService: DownloadsService) { }
+  constructor(private downloadsService: DownloadsService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
@@ -32,6 +34,18 @@ export class DownloadsListComponent implements OnInit {
     });
     this.downloadsService.getDownloadSPI().subscribe(spi => {
       this.downloadSupported = spi.supported;
+    });
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      const order = params['sort'];
+      if (order === "date") {
+        this.order = "createdAt";
+      } else if (order === "prio") {
+        this.order = "priority";
+      }
+      const ascending = params['asc'];
+      if (ascending != null) {
+        this.ascending = ascending === "true";
+      }
     });
   }
 
