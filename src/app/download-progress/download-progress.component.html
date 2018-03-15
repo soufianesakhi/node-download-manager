@@ -5,22 +5,23 @@
     </div>
     <div *ngFor="let progress of progressArray" class="card col-md-5">
       <ul class="list-group list-group-flush">
+        <li class="list-group-item font-weight-bold">{{progress.title}}</li>
         <li class="list-group-item">{{progress.fileName}}</li>
         <li class="list-group-item">
           <div class="progress">
-            <div class="progress-bar" [style.width.%]="progress.percent" [class.bg-success]="progress.percent === 100">
-              <span class="show">{{progress.percent}}%</span>
+            <div class="progress-bar progress-bar-striped" [style.width.%]="progress.percent" [class.bg-success]="progress.percent === 100">
+              <span class="progress-metadata">
+                <span class="badge" [class.badge-primary]="progress.percent !== 100">{{progress.percent}}%</span>
+              </span>
+              <span *ngIf="progress.percent !== 100" class="progress-metadata speed">
+                <span class="badge badge-primary">{{progress.speed | number:'1.2-2'}} MB/s</span>
+              </span>
+              <span *ngIf="progress.percent !== 100" class="progress-metadata remaining">
+                <span class="badge badge-primary">{{progress.remainingSize | number:'1.0-0' }}MB</span>
+                <span class="badge badge-primary">{{progress.remainingTime | number:'1.0-0'}}s</span>
+              </span>
             </div>
           </div>
-        </li>
-        <li *ngIf="progress.remainingSize !== 0" class="list-group-item">
-          Speed:
-          <span class="badge badge-pill badge-secondary">{{progress.speed}} MB/s</span>
-        </li>
-        <li *ngIf="progress.remainingSize !== 0" class="list-group-item">
-          Remaining:
-          <span class="badge badge-pill badge-secondary">{{progress.remainingTime}} sec</span>
-          <span class="badge badge-pill badge-secondary">{{progress.remainingSize}} MB</span>
         </li>
       </ul>
     </div>

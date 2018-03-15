@@ -15,11 +15,16 @@ declare module "model" {
 
     interface DownloadProgress {
         id: number;
+        title: string;
         fileName: string;
-        percent: number; // Between 0 and 100
-        speed: number; // Mega Bytes per second
-        remainingTime: number; // Seconds
-        remainingSize: number; // Mega Bytes
+        /** Between 0 and 100 */
+        percent: number;
+        /** Mega Bytes per second */
+        speed: number;
+        /** Seconds */
+        remainingTime: number;
+        /** Mega Bytes */
+        remainingSize: number;
     }
 
     interface DownloadLinksWSMessage {

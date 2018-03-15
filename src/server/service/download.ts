@@ -14,7 +14,7 @@ export class DownloadManager {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
     }
 
-    download(directDownloadURI: string, fileName: string, id: number, endCallback: (finalFilePath: string) => void) {
+    download(directDownloadURI: string, title: string, fileName: string, id: number, endCallback: (finalFilePath: string) => void) {
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
         this.appendLog("start", fileName);
         progress(request(directDownloadURI), {
@@ -22,6 +22,7 @@ export class DownloadManager {
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
                 id: id,
+                title: title,
                 fileName: fileName,
                 percent: this.format(state.percent * 100),
                 speed: this.format(state.speed / 1e6),
@@ -39,6 +40,7 @@ export class DownloadManager {
         }).on('end', () => {
             const p: DownloadProgress = {
                 id: id,
+                title: title,
                 fileName: fileName,
                 percent: 100,
                 speed: 0,

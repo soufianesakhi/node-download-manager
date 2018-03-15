@@ -83,13 +83,26 @@ h1 {
   position: relative;
 }
 
-.download-progress-container .progress span {
+.download-progress-container .progress .progress-metadata {
   position: absolute;
   display: block;
   width: 100%;
-  color: black;
+  color: white;
+}
+
+.download-progress-container .progress .speed {
+  text-align: left;
+  padding-left:2%;
+  font-size: 0.75rem;
+}
+
+.download-progress-container .progress .remaining {
+  text-align: right;
+  padding-right: 2%;
+  font-size: 0.75rem;
 }
 
 .download-progress-container .badge {
-  font-size: 0.75rem;
+  border-radius: 100%;
+  cursor: default;
 }
