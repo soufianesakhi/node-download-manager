@@ -51,9 +51,12 @@ export class DownloadsService {
         this.downloadProgressSubject.next(message.data);
       }
     };
-    client.onerror = (e) => { console.log('WebSocket Connection Error', e); };
+    client.onerror = (e) => { console.log('WebSocket Connection Error'); };
     client.onopen = () => { console.log('WebSocket Client Connected'); };
-    client.onclose = () => { console.log('WebSocket Client Closed'); };
+    client.onclose = () => {
+      console.log('WebSocket Client Closed. Retrying to connect after 1s...');
+      setTimeout(this.startWebSocketConnection(), 1000);
+    };
   }
 
   newDownloadLinksSubscribe(callback: (data: DownloadLinksModel) => void) {
