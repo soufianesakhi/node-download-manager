@@ -9,16 +9,16 @@
         <li class="list-group-item">{{progress.fileName}}</li>
         <li class="list-group-item">
           <div class="progress">
-            <div class="progress-bar progress-bar-striped" [style.width.%]="progress.percent" [class.bg-success]="progress.percent === 100">
+            <div class="progress-bar" [style.width.%]="progress.percent" [class.bg-info]="progress.percent !== 100" [class.bg-success]="progress.percent === 100">
               <span class="progress-metadata">
-                <span class="badge" [class.badge-primary]="progress.percent !== 100">{{progress.percent}}%</span>
+                <span class="badge" [class.badge-warning]="progress.percent !== 100">{{progress.percent | number:'1.0-0'}}%</span>
               </span>
               <span *ngIf="progress.percent !== 100" class="progress-metadata speed">
-                <span class="badge badge-primary">{{progress.speed | number:'1.2-2'}} MB/s</span>
+                <span class="badge badge-warning">{{progress.speed | number:'1.2-2'}} MB/s</span>
               </span>
               <span *ngIf="progress.percent !== 100" class="progress-metadata remaining">
-                <span class="badge badge-primary">{{progress.remainingSize | number:'1.0-0' }}MB</span>
-                <span class="badge badge-primary">{{progress.remainingTime | number:'1.0-0'}}s</span>
+                <span class="badge badge-warning">{{progress.remainingSize | number:'1.0-0' }} MB</span>
+                <span class="badge badge-warning">{{progress.remainingTime | number:'1.0-0'}} s</span>
               </span>
             </div>
           </div>
