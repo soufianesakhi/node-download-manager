@@ -4,7 +4,7 @@ import { DownloadLinksWSMessage } from "../..";
 
 export class WebSocketManager {
     clientConnections: connection[] = [];
-    messageQueue: DownloadLinksWSMessage[] = [];
+    messageQueue: { [id: number]: DownloadLinksWSMessage } = {};
 
     constructor(server: Server) {
         const wsServer = new WebSocketServer({
@@ -15,10 +15,14 @@ export class WebSocketManager {
         wsServer.on('close', this.onClose.bind(this));
     }
 
+    getMessageQueueLength() {
+        return Object.keys(this.messageQueue).length;
+    }
+
     onConnect(clientConnection: connection) {
         this.clientConnections.push(clientConnection);
-        while (this.messageQueue.length > 0) {
-            clientConnection.sendUTF(JSON.stringify(this.messageQueue.pop()));
+        while (this.getMessageQueueLength() > 0) {
+            Object.values(this.messageQueue).forEach(this.send, this);
         }
     }
 
@@ -33,12 +37,16 @@ export class WebSocketManager {
 
     sendMessage(message: DownloadLinksWSMessage) {
         if (this.clientConnections.length === 0) {
-            if (this.messageQueue.length === 0) {
+            if (this.getMessageQueueLength() === 0) {
                 console.warn("No web socket clients connected, messages will be queued");
             }
-            this.messageQueue.push(message);
+            this.messageQueue[message.id] = message;
             return;
         }
+        this.send(message);
+    }
+
+    private send(message: DownloadLinksWSMessage) {
         this.clientConnections.forEach(c => c.sendUTF(JSON.stringify(message)));
     }
 }

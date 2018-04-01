@@ -29,6 +29,7 @@ declare module "model" {
 
     interface DownloadLinksWSMessage {
         channel: "new" | "progress";
+        id: number;
         data: any;
     }
 

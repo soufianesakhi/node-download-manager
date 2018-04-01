@@ -25,7 +25,8 @@ export class DownloadLinksAPI extends MongoAPI<DownloadLinksModel> {
     postSuccessCallback(links: DownloadLinksModel) {
         this.webSocketManager.sendMessage({
             channel: "new",
-            data: links
+            data: links,
+            id: links._id
         });
     }
 

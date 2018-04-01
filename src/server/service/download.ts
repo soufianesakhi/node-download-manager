@@ -31,7 +31,8 @@ export class DownloadManager {
             };
             this.webSocketManager.sendMessage({
                 channel: "progress",
-                data: p
+                data: p,
+                id: id
             });
         }).on('error', (err: Error) => {
             notify("Download error", fileName + "\n" + err.message);
@@ -49,7 +50,8 @@ export class DownloadManager {
             };
             this.webSocketManager.sendMessage({
                 channel: "progress",
-                data: p
+                data: p,
+                id: id
             });
             endCallback(downloadFileDestination);
             this.appendLog("end", fileName);
