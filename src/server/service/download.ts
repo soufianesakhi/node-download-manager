@@ -4,12 +4,12 @@ import * as path from 'path';
 import * as request from 'request';
 import * as progress from 'request-progress';
 import { notify } from '../util/utils';
-import { WebSocketManager } from './websocket';
+import { DownloadLinksWebSocketManager } from './websocket';
 
 
 export class DownloadManager {
     private downloadsLogFile: string;
-    constructor(private webSocketManager: WebSocketManager, private downloadDirectory: string) {
+    constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
     }
 

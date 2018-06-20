@@ -6,7 +6,7 @@ import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
 import { notify } from './util/utils';
-import { WebSocketManager } from './service/websocket';
+import { DownloadLinksWebSocketManager } from './service/websocket';
 import { registerSPI } from './spi';
 import { DownloadManager } from './service/download';
 
@@ -72,7 +72,7 @@ app.set('port', port);
 
 const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));
-const webSocketManager = new WebSocketManager(server);
+const webSocketManager = new DownloadLinksWebSocketManager(server);
 apiRegistry.setWebSocketManager(webSocketManager);
 
 export const downloadManager = new DownloadManager(webSocketManager, downloadDirectory);

@@ -1,9 +1,9 @@
-import { Request, Response, Express, Router } from 'express';
-import { DownloadLinksAPI } from './dl-links';
+import { Express, Request, Response, Router } from 'express';
 import { ValueModel } from '../..';
-import { MongoAPI } from './mongo';
 import { getValueDAO } from '../dao/value-dao';
-import { WebSocketManager } from '../service/websocket';
+import { DownloadLinksWebSocketManager } from '../service/websocket';
+import { DownloadLinksAPI } from './dl-links';
+import { MongoAPI } from './mongo';
 
 export class ApiRegistry {
     private router = Router();
@@ -21,7 +21,7 @@ export class ApiRegistry {
         res.send('api works');
     }
 
-    public setWebSocketManager(manager: WebSocketManager) {
+    public setWebSocketManager(manager: DownloadLinksWebSocketManager) {
         this.downloadLinksAPI.setWebSocketManager(manager);
     }
 }

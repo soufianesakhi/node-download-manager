@@ -2,7 +2,7 @@ import { Server } from "http";
 import { server as WebSocketServer, connection } from "websocket";
 import { DownloadLinksWSMessage } from "../..";
 
-export class WebSocketManager {
+export class DownloadLinksWebSocketManager {
     clientConnections: connection[] = [];
     messageQueue: { [id: number]: DownloadLinksWSMessage } = {};
 
