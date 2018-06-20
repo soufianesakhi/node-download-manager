@@ -41,7 +41,7 @@
 
     <!-- Selected links details-->
     <div *ngIf="selectedLinks" class="col-md-5">
-      <div class="card" [ngStyle]="{'margin-top.px': getSelectedLinksMarginTop()}">
+      <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': getSelectedLinksMarginTop(selectedLinksContainer)}">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
@@ -72,7 +72,7 @@
               <button type="button" class="btn btn-secondary card-link">Edit</button>
             </a>
             <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
-            <button *ngIf="downloadSupported" (click)="downloadSelect()" type="button" class="btn btn-secondary card-link">Download</button>
+            <button *ngIf="downloadSupported" (click)="downloadSelect()" [disabled]="downloadSubmitted" type="button" class="btn btn-secondary card-link">Download</button>
           </li>
           <li class="list-group-item">
             <div *ngFor="let url of flatLinks(selectedLinks)">

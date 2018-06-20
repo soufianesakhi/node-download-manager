@@ -1,8 +1,8 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
-import { DownloadLinksModel, DownloadSPI } from '../..';
-import { DownloadsService } from '../service/downloads.service';
-import { flatLinks, stringifyLinks, removeFromArray, copyText } from '../utils/downloads-utils';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
+import { DownloadLinksModel } from '../..';
+import { DownloadsService } from '../service/downloads.service';
+import { copyText, flatLinks, removeFromArray, stringifyLinks } from '../utils/downloads-utils';
 
 @Component({
   selector: 'app-downloads-list',
@@ -19,6 +19,7 @@ export class DownloadsListComponent implements OnInit {
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
   downloadSupported: boolean;
+  downloadSubmitted = false;
 
   constructor(private downloadsService: DownloadsService,
     private activatedRoute: ActivatedRoute) { }
@@ -50,14 +51,16 @@ export class DownloadsListComponent implements OnInit {
   }
 
   onSelect(selectedLinks: DownloadLinksModel, event: Event, allLinksContainer: Element) {
-    const selectedOffsetTop = (event.target as Element).getBoundingClientRect().top;
+    const selected = (event.target as Element).getBoundingClientRect();
     const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
-    this.selectedLinksMarginTop = selectedOffsetTop - containerOffsetTop;
+    this.selectedLinksMarginTop = selected.height + selected.top - containerOffsetTop;
     this.selectedLinks = selectedLinks;
+    this.downloadSubmitted = false;
   }
 
-  getSelectedLinksMarginTop() {
-    return Math.max(this.selectedLinksMarginTop - 150, 0);
+  getSelectedLinksMarginTop(selectedLinksContainer: Element) {
+    const selectedLinksHeight = selectedLinksContainer.getBoundingClientRect().height;
+    return Math.max(this.selectedLinksMarginTop - selectedLinksHeight, 0);
   }
 
   isSelected(links: DownloadLinksModel) {
@@ -75,6 +78,7 @@ export class DownloadsListComponent implements OnInit {
   }
 
   downloadSelect() {
+    this.downloadSubmitted = true;
     this.downloadsService.downloadLinks(this.selectedLinks).subscribe(() => {
       console.log("Download submitted");
     });
