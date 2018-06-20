@@ -1,10 +1,11 @@
 import { Server } from "http";
-import { server as WebSocketServer, connection } from "websocket";
-import { DownloadLinksWSMessage } from "../..";
+import { IMessage, connection, server as WebSocketServer } from "websocket";
+import { DownloadActionWSMessage, DownloadLinksWSMessage } from "../..";
 
 export class DownloadLinksWebSocketManager {
     clientConnections: connection[] = [];
-    messageQueue: { [id: number]: DownloadLinksWSMessage } = {};
+    messageById: { [id: number]: DownloadLinksWSMessage } = {};
+    downloadActionListener: DownloadActionListener;
 
     constructor(server: Server) {
         const wsServer = new WebSocketServer({
@@ -15,18 +16,13 @@ export class DownloadLinksWebSocketManager {
         wsServer.on('close', this.onClose.bind(this));
     }
 
-    getMessageQueueLength() {
-        return Object.keys(this.messageQueue).length;
-    }
-
-    onConnect(clientConnection: connection) {
+    private onConnect(clientConnection: connection) {
         this.clientConnections.push(clientConnection);
-        while (this.getMessageQueueLength() > 0) {
-            Object.values(this.messageQueue).forEach(this.send, this);
-        }
+        clientConnection.on("message", data => this.onMessage(data));
+        Object.values(this.messageById).forEach((m: DownloadLinksWSMessage) => this.send(clientConnection, m));
     }
 
-    onClose(clientConnection: connection, reasonCode: number, description: string) {
+    private onClose(clientConnection: connection, reasonCode: number, description: string) {
         const iToRemove = this.clientConnections.indexOf(clientConnection);
         if (iToRemove < 0) {
             console.warn("Unable to clean web socket client connection: not found");
@@ -35,18 +31,43 @@ export class DownloadLinksWebSocketManager {
         }
     }
 
-    sendMessage(message: DownloadLinksWSMessage) {
-        if (this.clientConnections.length === 0) {
-            if (this.getMessageQueueLength() === 0) {
-                console.warn("No web socket clients connected, messages will be queued");
-            }
-            this.messageQueue[message.id] = message;
-            return;
+    onMessage(data: IMessage) {
+        const message: DownloadActionWSMessage = JSON.parse(data.utf8Data);
+        const id = message.id;
+        switch (message.action) {
+            case "cancel":
+                delete this.messageById[id];
+                this.downloadActionListener.cancel(id);
+                break;
+            case "pause":
+                this.downloadActionListener.pause(id);
+                break;
+            case "resume":
+                this.downloadActionListener.resume(id);
+                break;
         }
-        this.send(message);
     }
 
-    private send(message: DownloadLinksWSMessage) {
-        this.clientConnections.forEach(c => c.sendUTF(JSON.stringify(message)));
+    sendMessage(message: DownloadLinksWSMessage) {
+        this.messageById[message.id] = message;
+        this.sendAll(message);
     }
+
+    registerDownloadActionListener(listener: DownloadActionListener) {
+        this.downloadActionListener = listener;
+    }
+
+    private sendAll(message: DownloadLinksWSMessage) {
+        this.clientConnections.forEach(c => this.send(c, message));
+    }
+
+    private send(conn: connection, message: DownloadLinksWSMessage) {
+        conn.sendUTF(JSON.stringify(message));
+    }
+}
+
+export interface DownloadActionListener {
+    cancel(id: number);
+    pause(id: number);
+    resume(id: number);
 }

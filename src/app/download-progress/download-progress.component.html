@@ -9,7 +9,7 @@
         <li class="list-group-item">{{progress.fileName}}</li>
         <li class="list-group-item">
           <div class="progress">
-            <div class="progress-bar" [style.width.%]="progress.percent" [class.bg-info]="progress.percent !== 100" [class.bg-success]="progress.percent === 100">
+            <div #progressBar class="progress-bar" [style.width.%]="progress.percent" [class.bg-info]="progress.percent !== 100" [class.bg-success]="progress.percent === 100">
               <span class="progress-metadata">
                 <span class="badge" [class.badge-warning]="progress.percent !== 100">{{progress.percent | number:'1.0-0'}}%</span>
               </span>
@@ -22,6 +22,11 @@
               </span>
             </div>
           </div>
+        </li>
+        <li class="list-group-item" style="text-align: center;">
+          <button (click)="cancel(progress.id, progressBar)" type="button" class="btn btn-light btn-sm">Cancel</button>
+          <button (click)="pause(progress.id, progressBar)" type="button" class="btn btn-light btn-sm">Pause</button>
+          <button (click)="resume(progress.id, progressBar)" type="button" class="btn btn-light btn-sm">Resume</button>
         </li>
       </ul>
     </div>

@@ -33,4 +33,9 @@ declare module "model" {
         data: any;
     }
 
+    interface DownloadActionWSMessage {
+        action: "cancel" | "pause" | "resume";
+        id: number;
+    }
+
 }

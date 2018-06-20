@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import { DownloadLinks, DownloadLinksModel, ValueModel, DownloadSPI, DownloadLinksWSMessage, DownloadProgress } from '../..';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/map';
+// tslint:disable-next-line:max-line-length
+import { DownloadActionWSMessage, DownloadLinks, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel } from '../..';
 
 @Injectable()
 export class DownloadsService {
   spi: DownloadSPI;
   private newDownloadLinksSubject = new Subject<DownloadLinksModel>();
   private downloadProgressSubject = new Subject<DownloadProgress>();
+  private webSocketClient: WebSocket;
   constructor(private http: Http) {
     this.startWebSocketConnection();
     this.getDownloadSPI().subscribe(spi => {
@@ -41,8 +43,8 @@ export class DownloadsService {
   }
 
   startWebSocketConnection() {
-    const client = new WebSocket("ws://" + window.location.host);
-    client.onmessage = (e) => {
+    this.webSocketClient = new WebSocket("ws://" + window.location.host);
+    this.webSocketClient.onmessage = (e) => {
       const message: DownloadLinksWSMessage = JSON.parse(e.data);
       const channel = message.channel;
       if (channel === "new") {
@@ -51,12 +53,16 @@ export class DownloadsService {
         this.downloadProgressSubject.next(message.data);
       }
     };
-    client.onerror = (e) => { console.log('WebSocket Connection Error'); };
-    client.onopen = () => { console.log('WebSocket Client Connected'); };
-    client.onclose = () => {
+    this.webSocketClient.onerror = (e) => { console.log('WebSocket Connection Error'); };
+    this.webSocketClient.onopen = () => { console.log('WebSocket Client Connected'); };
+    this.webSocketClient.onclose = () => {
       console.log('WebSocket Client Closed. Retrying to connect after 1s...');
       setTimeout(this.startWebSocketConnection(), 1000);
     };
+  }
+
+  sendDownloadAction(message: DownloadActionWSMessage) {
+    this.webSocketClient.send(JSON.stringify(message));
   }
 
   newDownloadLinksSubscribe(callback: (data: DownloadLinksModel) => void) {

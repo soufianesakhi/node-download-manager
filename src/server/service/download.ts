@@ -4,20 +4,26 @@ import * as path from 'path';
 import * as request from 'request';
 import * as progress from 'request-progress';
 import { notify } from '../util/utils';
-import { DownloadLinksWebSocketManager } from './websocket';
+import { DownloadActionListener, DownloadLinksWebSocketManager } from './websocket';
 
 
-export class DownloadManager {
+export class DownloadManager implements DownloadActionListener {
     private downloadsLogFile: string;
+    requestById: { [id: number]: request.Request } = {};
+    downloadNameById: { [id: number]: string } = {};
     constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
+        this.webSocketManager.registerDownloadActionListener(this);
     }
 
     download(directDownloadURI: string, title: string, fileName: string, id: number, endCallback: (finalFilePath: string) => void) {
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
-        const dlFileName = title + " (" + fileName + ")";
-        this.appendLog("start", dlFileName);
-        progress(request(directDownloadURI), {
+        const downloadName = title + " ;; " + fileName + " ;; " + id;
+        this.appendLog("start", downloadName);
+        const req = request(directDownloadURI);
+        this.requestById[id] = req;
+        this.downloadNameById[id] = downloadName;
+        progress(req, {
             throttle: 100, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
@@ -37,7 +43,8 @@ export class DownloadManager {
         }).on('error', (err: Error) => {
             notify("Download error", fileName + "\n" + err.message);
             console.error(err);
-            this.appendLog("error", dlFileName + "\n" + err);
+            this.appendLog("error", downloadName + "\n" + err);
+            this.cleanRequest(id);
         }).on('end', () => {
             const p: DownloadProgress = {
                 id: id,
@@ -54,8 +61,45 @@ export class DownloadManager {
                 id: id
             });
             endCallback(downloadFileDestination);
-            this.appendLog("end", dlFileName);
+            this.appendLog("end", downloadName);
+            this.cleanRequest(id);
         }).pipe(fs.createWriteStream(downloadFileDestination));
+    }
+
+    cancel(id: number) {
+        const req = this.requestById[id];
+        if (req) {
+            req.abort();
+            this.appendLog("cancel", this.downloadNameById[id]);
+            this.cleanRequest(id);
+        } else {
+            this.appendLog("cancel", id + " not found");
+        }
+    }
+
+    pause(id: number) {
+        const req = this.requestById[id];
+        if (req) {
+            req.pause();
+            this.appendLog("pause", this.downloadNameById[id]);
+        } else {
+            this.appendLog("pause", id + " not found");
+        }
+    }
+
+    resume(id: number) {
+        const req = this.requestById[id];
+        if (req) {
+            req.resume();
+            this.appendLog("resume", this.downloadNameById[id]);
+        } else {
+            this.appendLog("resume", id + " not found");
+        }
+    }
+
+    cleanRequest(id: number) {
+        delete this.requestById[id];
+        delete this.downloadNameById[id];
     }
 
     format(n: number) {

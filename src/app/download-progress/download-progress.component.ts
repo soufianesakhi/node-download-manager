@@ -27,4 +27,22 @@ export class DownloadProgressComponent implements OnInit {
     });
   }
 
+  cancel(id: number, progressBar: HTMLElement) {
+    progressBar.classList.remove("bg-info", "bg-warning");
+    progressBar.classList.add("bg-danger");
+    this.downloadsService.sendDownloadAction({ action: "cancel", id: id });
+  }
+
+  pause(id: number, progressBar: HTMLElement) {
+    progressBar.classList.remove("bg-info");
+    progressBar.classList.add("bg-warning");
+    this.downloadsService.sendDownloadAction({ action: "pause", id: id });
+  }
+
+  resume(id: number, progressBar: HTMLElement) {
+    progressBar.classList.remove("bg-warning");
+    progressBar.classList.add("bg-info");
+    this.downloadsService.sendDownloadAction({ action: "resume", id: id });
+  }
+
 }
