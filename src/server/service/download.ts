@@ -1,11 +1,10 @@
 import * as fs from 'fs';
+import { DownloadProgress } from 'model';
 import * as path from 'path';
 import * as request from 'request';
 import * as progress from 'request-progress';
-import { DownloadLinksModel } from '../..';
-import { WebSocketManager } from './websocket';
-import { DownloadProgress } from 'model';
 import { notify } from '../util/utils';
+import { WebSocketManager } from './websocket';
 
 
 export class DownloadManager {
@@ -16,7 +15,8 @@ export class DownloadManager {
 
     download(directDownloadURI: string, title: string, fileName: string, id: number, endCallback: (finalFilePath: string) => void) {
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
-        this.appendLog("start", fileName);
+        const dlFileName = title + " (" + fileName + ")";
+        this.appendLog("start", dlFileName);
         progress(request(directDownloadURI), {
             throttle: 100, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
@@ -37,7 +37,7 @@ export class DownloadManager {
         }).on('error', (err: Error) => {
             notify("Download error", fileName + "\n" + err.message);
             console.error(err);
-            this.appendLog("error", fileName + " -  " + err);
+            this.appendLog("error", dlFileName + "\n" + err);
         }).on('end', () => {
             const p: DownloadProgress = {
                 id: id,
@@ -54,7 +54,7 @@ export class DownloadManager {
                 id: id
             });
             endCallback(downloadFileDestination);
-            this.appendLog("end", fileName);
+            this.appendLog("end", dlFileName);
         }).pipe(fs.createWriteStream(downloadFileDestination));
     }
 
