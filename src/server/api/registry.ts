@@ -1,5 +1,5 @@
 import { Express, Request, Response, Router } from 'express';
-import { ValueModel } from '../..';
+import { DownloadLinksIndexDAO } from '../dao/dl-links-dao';
 import { getValueDAO } from '../dao/value-dao';
 import { DownloadLinksWebSocketManager } from '../service/websocket';
 import { DownloadLinksAPI } from './dl-links';
@@ -13,7 +13,8 @@ export class ApiRegistry {
         this.router.get('/', this.get);
         this.downloadLinksAPI = new DownloadLinksAPI(this.router, '/downloads');
         this.downloadLinksAPI.init();
-        new MongoAPI<ValueModel>(this.router, getValueDAO("Category"), '/categories').init();
+        new MongoAPI(this.router, getValueDAO("Category"), '/categories').init();
+        new MongoAPI(this.router, DownloadLinksIndexDAO, '/indexes').init();
         app.use('/api', this.router);
     }
 

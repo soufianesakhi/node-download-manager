@@ -13,6 +13,11 @@ declare module "model" {
     }
     interface DownloadLinksModel extends DownloadLinks, Document { }
 
+    interface DownloadLinksIndex extends TimeStampedModel, Document {
+        name: string;
+        list: DownloadLinks[];
+    }
+
     interface DownloadProgressMetaData {
         id: number;
         title: string;
