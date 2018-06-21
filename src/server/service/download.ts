@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { DownloadProgress } from 'model';
+import { DownloadProgress, DownloadState } from 'model';
 import * as path from 'path';
 import * as request from 'request';
 import * as progress from 'request-progress';
@@ -11,6 +11,7 @@ export class DownloadManager implements DownloadActionListener {
     private downloadsLogFile: string;
     requestById: { [id: number]: request.Request } = {};
     downloadNameById: { [id: number]: string } = {};
+    stateById: { [id: number]: DownloadState } = {};
     constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
         this.webSocketManager.registerDownloadActionListener(this);
@@ -33,7 +34,8 @@ export class DownloadManager implements DownloadActionListener {
                 percent: this.format(state.percent * 100),
                 speed: this.format(state.speed / 1e6),
                 remainingTime: this.format(state.time.remaining),
-                remainingSize: this.format((state.size.total - state.size.transferred) / 1e6)
+                remainingSize: this.format((state.size.total - state.size.transferred) / 1e6),
+                state: this.stateById[id]
             };
             this.webSocketManager.sendMessage({
                 channel: "progress",
@@ -46,6 +48,7 @@ export class DownloadManager implements DownloadActionListener {
             this.appendLog("error", downloadName + "\n" + err);
             this.cleanRequest(id);
         }).on('end', () => {
+            const state = this.stateById[id];
             const p: DownloadProgress = {
                 id: id,
                 title: title,
@@ -53,14 +56,19 @@ export class DownloadManager implements DownloadActionListener {
                 percent: 100,
                 speed: 0,
                 remainingTime: 0,
-                remainingSize: 0
+                remainingSize: 0,
+                state: state
             };
             this.webSocketManager.sendMessage({
                 channel: "progress",
                 data: p,
                 id: id
             });
-            endCallback(downloadFileDestination);
+            if (state !== "cancel") {
+                endCallback(downloadFileDestination);
+            } else {
+                notify("Download cancelled", fileName);
+            }
             this.appendLog("end", downloadName);
             this.cleanRequest(id);
         }).pipe(fs.createWriteStream(downloadFileDestination));
@@ -71,7 +79,7 @@ export class DownloadManager implements DownloadActionListener {
         if (req) {
             req.abort();
             this.appendLog("cancel", this.downloadNameById[id]);
-            this.cleanRequest(id);
+            this.stateById[id] = "cancel";
         } else {
             this.appendLog("cancel", id + " not found");
         }
@@ -82,6 +90,7 @@ export class DownloadManager implements DownloadActionListener {
         if (req) {
             req.pause();
             this.appendLog("pause", this.downloadNameById[id]);
+            this.stateById[id] = "pause";
         } else {
             this.appendLog("pause", id + " not found");
         }
@@ -92,6 +101,7 @@ export class DownloadManager implements DownloadActionListener {
         if (req) {
             req.resume();
             this.appendLog("resume", this.downloadNameById[id]);
+            delete this.stateById[id];
         } else {
             this.appendLog("resume", id + " not found");
         }
@@ -100,6 +110,8 @@ export class DownloadManager implements DownloadActionListener {
     cleanRequest(id: number) {
         delete this.requestById[id];
         delete this.downloadNameById[id];
+        delete this.stateById[id];
+        this.webSocketManager.clean(id);
     }
 
     format(n: number) {

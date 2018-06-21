@@ -13,10 +13,15 @@ declare module "model" {
     }
     interface DownloadLinksModel extends DownloadLinks, Document { }
 
-    interface DownloadProgress {
+    interface DownloadProgressMetaData {
         id: number;
         title: string;
         fileName: string;
+    }
+
+    type DownloadState = "cancel" | "pause" | "resume";
+
+    interface DownloadProgress extends DownloadProgressMetaData {
         /** Between 0 and 100 */
         percent: number;
         /** Mega Bytes per second */
@@ -25,6 +30,7 @@ declare module "model" {
         remainingTime: number;
         /** Mega Bytes */
         remainingSize: number;
+        state: DownloadState;
     }
 
     interface DownloadLinksWSMessage {
@@ -34,7 +40,7 @@ declare module "model" {
     }
 
     interface DownloadActionWSMessage {
-        action: "cancel" | "pause" | "resume";
+        action: DownloadState;
         id: number;
     }
 

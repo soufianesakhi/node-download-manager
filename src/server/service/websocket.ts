@@ -36,7 +36,6 @@ export class DownloadLinksWebSocketManager {
         const id = message.id;
         switch (message.action) {
             case "cancel":
-                delete this.messageById[id];
                 this.downloadActionListener.cancel(id);
                 break;
             case "pause":
@@ -51,6 +50,10 @@ export class DownloadLinksWebSocketManager {
     sendMessage(message: DownloadLinksWSMessage) {
         this.messageById[message.id] = message;
         this.sendAll(message);
+    }
+
+    clean(id: number) {
+        delete this.messageById[id];
     }
 
     registerDownloadActionListener(listener: DownloadActionListener) {
