@@ -67,7 +67,12 @@ export class DownloadManager implements DownloadActionListener {
             if (state !== "cancel") {
                 endCallback(downloadFileDestination);
             } else {
-                notify("Download cancelled", fileName);
+                fs.unlink(downloadFileDestination, unlErr => {
+                    notify("Download cancelled", fileName);
+                    if (unlErr) {
+                        return console.error(unlErr);
+                    }
+                });
             }
             this.appendLog("end", downloadName);
             this.cleanRequest(id);
