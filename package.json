@@ -14,9 +14,10 @@
     "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server && title node && node dist-server/main\"",
     "build-ext": "tsc -p src/tsconfig.ext.json",
     "watch-ext": "title \"tsc ext\" && tsc --watch -p src/tsconfig.ext.json",
-    "watch-parser": "start tsc --watch -p src/tsconfig.parser.json",
+    "watch-scripts": "title scripts && tsc --watch -p src/tsconfig.scripts.json",
     "l": "start npm run watch-ng& start npm run watch-server&",
-    "le": "start npm run watch-ext&"
+    "le": "start npm run watch-ext&",
+    "ls": "start npm run watch-scripts&"
   },
   "private": true,
   "dependencies": {

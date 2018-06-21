@@ -1,13 +1,13 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "outDir": "../dist-parser",
+        "outDir": "../dist-scripts",
         "baseUrl": "./",
         "module": "commonjs",
         "target": "es6"
     },
     "include": [
-        "parser/**/*.ts",
+        "scripts/**/*.ts",
         "server/**/*.ts"
     ],
     "exclude": [
