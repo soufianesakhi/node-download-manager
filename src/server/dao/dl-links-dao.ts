@@ -1,8 +1,8 @@
-import { Document, model, Schema } from "mongoose";
+import { model } from "mongoose";
+import { DownloadLinksIndex, DownloadLinksModel } from "../..";
 import { TimeStampedSchema } from "./common-dao";
-import { DownloadLinks, DownloadLinksModel, DownloadLinksIndex } from "../..";
 
-export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new TimeStampedSchema({
+const DownloadLinksSchema = new TimeStampedSchema({
     artist: String,
     title: {
         type: String,
@@ -18,15 +18,13 @@ export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', new T
     previews: [String],
     sizeMB: Number,
     comments: String
-}));
+});
+export const DownloadLinksDAO = model<DownloadLinksModel>('DownloadLinks', DownloadLinksSchema);
 
 export const DownloadLinksIndexDAO = model<DownloadLinksIndex>('DownloadLinksIndex', new TimeStampedSchema({
     name: {
         type: String,
         required: true
     },
-    list: [new Schema({
-        artist: String,
-        title: String,
-    })]
+    list: [DownloadLinksSchema]
 }));
