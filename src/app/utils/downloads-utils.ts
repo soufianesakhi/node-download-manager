@@ -1,10 +1,10 @@
-import { DownloadLinksModel } from "../..";
+import { DownloadLinksModel, DownloadLinks } from "../..";
 
-export function stringifyLinks(selectedLinks: DownloadLinksModel) {
+export function stringifyLinks(selectedLinks: DownloadLinks) {
     return flatLinks(selectedLinks).join("\n");
 }
 
-export function flatLinks(selectedLinks: DownloadLinksModel) {
+export function flatLinks(selectedLinks: DownloadLinks) {
     const allLinks: string[] = [];
     selectedLinks.links.forEach(l => allLinks.push(...l));
     return allLinks;

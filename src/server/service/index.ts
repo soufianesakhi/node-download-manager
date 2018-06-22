@@ -39,7 +39,7 @@ function parse(data, category, indexLinks: DownloadLinks[]) {
             title: title,
             links: [[]],
             category: category,
-            createdAt: new Date()
+            updatedAt: new Date()
         });
     });
 }

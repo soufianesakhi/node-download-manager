@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
 // tslint:disable-next-line:max-line-length
-import { DownloadActionWSMessage, DownloadLinks, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel } from '../..';
+import { DownloadActionWSMessage, DownloadLinks, DownloadLinksIndex, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel, DownloadLinksEntry } from '../..';
 
 @Injectable()
 export class DownloadsService {
@@ -19,7 +19,24 @@ export class DownloadsService {
   }
 
   getAllDownloadLinks() {
-    return this.http.get('/api/downloads').map<any, DownloadLinksModel[]>(res => res.json());
+    const allDownloadLinksSubject = new Subject<DownloadLinksEntry[]>();
+    this.http.get('/api/downloads')
+      .map<any, DownloadLinksModel[]>(res => res.json())
+      .subscribe(downloadLinks => {
+        allDownloadLinksSubject.next(downloadLinks);
+      });
+    this.http.get('/api/indexes')
+      .map<any, DownloadLinksIndex[]>(res => res.json())
+      .subscribe(downloadLinksIndexes => {
+        downloadLinksIndexes.forEach(index => {
+          allDownloadLinksSubject.next(index.list.map(links => {
+            const entry = links as DownloadLinksEntry;
+            entry.indexName = index.name;
+            return entry;
+          }));
+        });
+      });
+    return allDownloadLinksSubject;
   }
 
   getDownloadLinks(id: string) {

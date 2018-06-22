@@ -45,18 +45,22 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
-            <button (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
+            <button *ngIf="notIndexSelected()" (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
           </li>
           <li *ngIf="hasMetaLinks()" class="list-group-item">
             <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
             <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
           </li>
-          <li class="list-group-item">
+          <li *ngIf="notIndexSelected()" class="list-group-item">
             <b>Id</b>: {{selectedLinks._id}}
+          </li>
+          <li *ngIf="!notIndexSelected()" class="list-group-item">
+            <b>Index</b>: {{selectedLinks.indexName}}
           </li>
           <li class="list-group-item">
             <b>Category</b>: {{selectedLinks.category}}
-            <b>Priority</b>: {{selectedLinks.priority}}
+            <span *ngIf="selectedLinks.priority">
+              <b>Priority</b>: {{selectedLinks.priority}}</span>
           </li>
           <li class="list-group-item">
             <span *ngIf="selectedLinks.sizeMB">
@@ -65,16 +69,21 @@
             <span *ngIf="selectedLinks.comments">
               <b>Comments</b>: {{selectedLinks.comments}}
             </span>
-            <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
+            <span *ngIf="selectedLinks.createdAt">
+              <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
+            </span>
+            <span *ngIf="!selectedLinks.createdAt && selectedLinks.updatedAt">
+              <b>Updated</b>: {{selectedLinks.updatedAt | date : 'dd/MM/yyyy HH:mm'}}
+            </span>
           </li>
-          <li class="list-group-item">
+          <li *ngIf="notIndexSelected()" class="list-group-item">
             <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
               <button type="button" class="btn btn-secondary card-link">Edit</button>
             </a>
             <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
             <button *ngIf="downloadSupported" (click)="downloadSelect()" [disabled]="downloadSubmitted" type="button" class="btn btn-secondary card-link">Download</button>
           </li>
-          <li class="list-group-item">
+          <li *ngIf="notIndexSelected()" class="list-group-item">
             <div *ngFor="let url of flatLinks(selectedLinks)">
               <a [href]="url" class="card-link">{{url}}</a>
             </div>

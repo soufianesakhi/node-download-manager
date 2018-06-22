@@ -11,11 +11,16 @@ declare module "model" {
         sizeMB?: number;
         comments?: string;
     }
+
     interface DownloadLinksModel extends DownloadLinks, Document { }
+
+    interface DownloadLinksEntry extends DownloadLinksModel {
+        indexName?: string;
+    }
 
     interface DownloadLinksIndex extends TimeStampedModel, Document {
         name: string;
-        list: DownloadLinks[];
+        list: DownloadLinksModel[];
     }
 
     interface DownloadProgressMetaData {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { DownloadLinksModel } from '../..';
+import { DownloadLinksEntry, DownloadLinksModel } from '../..';
 import { DownloadsService } from '../service/downloads.service';
 import { copyText, flatLinks, removeFromArray, stringifyLinks } from '../utils/downloads-utils';
 
@@ -9,8 +9,8 @@ import { copyText, flatLinks, removeFromArray, stringifyLinks } from '../utils/d
   templateUrl: './downloads-list.component.html'
 })
 export class DownloadsListComponent implements OnInit {
-  downloadLinks: DownloadLinksModel[] = [];
-  selectedLinks: DownloadLinksModel;
+  downloadLinks: DownloadLinksEntry[] = [];
+  selectedLinks: DownloadLinksEntry;
   selectedLinksMarginTop = 0;
   fullTitle = "";
   order = "createdAt";
@@ -26,7 +26,8 @@ export class DownloadsListComponent implements OnInit {
 
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
-      this.downloadLinks = downloadLinks;
+      this.downloadLinks = this.downloadLinks.concat(downloadLinks);
+      console.log(this.downloadLinks.length);
     });
     this.downloadsService.newDownloadLinksSubscribe(links => {
       this.downloadLinks.splice(0, 0, links);
@@ -65,6 +66,10 @@ export class DownloadsListComponent implements OnInit {
 
   isSelected(links: DownloadLinksModel) {
     return this.selectedLinks && links._id === this.selectedLinks._id;
+  }
+
+  notIndexSelected() {
+    return !this.selectedLinks.indexName;
   }
 
   deleteSelect() {
