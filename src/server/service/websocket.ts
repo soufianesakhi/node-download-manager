@@ -1,5 +1,5 @@
 import { Server } from "http";
-import { IMessage, connection, server as WebSocketServer } from "websocket";
+import { connection, IMessage, server as WebSocketServer } from "websocket";
 import { DownloadActionWSMessage, DownloadLinksWSMessage } from "../..";
 
 export class DownloadLinksWebSocketManager {
@@ -48,7 +48,9 @@ export class DownloadLinksWebSocketManager {
     }
 
     sendMessage(message: DownloadLinksWSMessage) {
-        this.messageById[message.id] = message;
+        if (message.channel !== "new") {
+            this.messageById[message.id] = message;
+        }
         this.sendAll(message);
     }
 

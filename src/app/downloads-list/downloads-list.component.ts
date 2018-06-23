@@ -26,8 +26,8 @@ export class DownloadsListComponent implements OnInit {
 
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
-      this.downloadLinks = this.downloadLinks.concat(downloadLinks);
-      console.log(this.downloadLinks.length);
+      this.downloadLinks.push(...downloadLinks);
+      this.downloadLinks = this.downloadLinks.slice();
     });
     this.downloadsService.newDownloadLinksSubscribe(links => {
       this.downloadLinks.splice(0, 0, links);
@@ -75,6 +75,7 @@ export class DownloadsListComponent implements OnInit {
   deleteSelect() {
     this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(l => {
       removeFromArray(this.downloadLinks, this.selectedLinks);
+      this.downloadLinks = this.downloadLinks.slice();
       this.selectedLinks = this.downloadLinks[0];
       this.filterMetadata.count--;
     }, (error) => {
