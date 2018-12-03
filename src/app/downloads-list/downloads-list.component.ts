@@ -16,6 +16,7 @@ export class DownloadsListComponent implements OnInit {
   order = "createdAt";
   ascending = false;
   checkComents = "";
+  category = "";
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
   downloadSupported: boolean;
