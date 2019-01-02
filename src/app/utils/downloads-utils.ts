@@ -1,4 +1,4 @@
-import { DownloadLinksModel, DownloadLinks } from "../..";
+import { DownloadLinks } from "../..";
 
 export function stringifyLinks(selectedLinks: DownloadLinks) {
     return flatLinks(selectedLinks).join("\n");
@@ -15,7 +15,7 @@ export function parseLinks(txt: string) {
     let hostArray: string[] = [];
     let prevHostName = "";
     txt.split("\n").forEach(link => {
-        const currentHostname = this.getHostName(link);
+        const currentHostname = getHostName(link);
         if (hostArray.length > 0 && prevHostName !== currentHostname) {
             linksArray.push(hostArray);
             hostArray = [];
