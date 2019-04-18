@@ -4,7 +4,7 @@
         "outDir": "../dist-scripts",
         "baseUrl": "./",
         "module": "commonjs",
-        "target": "es6"
+        "target": "es2017"
     },
     "include": [
         "scripts/**/*.ts",

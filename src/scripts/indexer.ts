@@ -1,11 +1,12 @@
 import * as mongoose from 'mongoose';
-import { index } from "../server/service";
+import { index, reindex } from "../server/service";
 
-let rootPath, category, dbUrl;
+let rootPath, category, dbUrl, logDir;
 [
     rootPath,
     category,
-    dbUrl = 'mongodb://localhost:27017/users'
+    dbUrl = 'mongodb://localhost:27017/users',
+    logDir = "S:\\Downloads\\reindex"
 ] = process.argv.slice(2);
 if (!rootPath || !category) {
     console.log(`Expected at least 2 arguments: root path, category, (optionnal) db url`);
@@ -13,6 +14,13 @@ if (!rootPath || !category) {
 }
 
 mongoose.connect(dbUrl);
-index(rootPath, category, code => {
+
+async function startIndex() {
+    let code = await index(rootPath, category);
+    if (code === 0) {
+        code = await reindex(logDir, false);
+    }
     process.exit(code);
-});
+}
+
+startIndex();
