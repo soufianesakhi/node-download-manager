@@ -77,7 +77,8 @@ export async function reindex(logDir: string, dryRun: boolean): Promise<number> 
             infoLogger.append(`Final list size: ${doc.list.length}`);
         });
         infoLogger.append(``);
-        infoLogger.append(`Cleaning and merging duplicate indexes ...\n`);
+        infoLogger.append(`Cleaning and merging duplicate indexes ...`);
+        infoLogger.append(``);
         docs.sort((a, b) => {
             return getDocTimeMs(a) - getDocTimeMs(b);
         });
@@ -92,17 +93,16 @@ export async function reindex(logDir: string, dryRun: boolean): Promise<number> 
                 }
             }
             const olderIndex = indexNameToIndex[name];
+            indexNameToIndex[name] = newerIndex;
             if (olderIndex) {
-                infoLogger.append(`Merging indexes: ${getIndexName(newerIndex)} -> ${getIndexName(olderIndex)}`);
-                Array.prototype.push.apply(olderIndex.list, newerIndex.list);
-                olderIndex.markModified("list");
-                indexesToUpdate.push(olderIndex);
+                infoLogger.append(`Merging indexes: ${getIndexName(olderIndex)} -> ${getIndexName(newerIndex)}`);
+                Array.prototype.push.apply(newerIndex.list, olderIndex.list);
+                newerIndex.markModified("list");
+                indexesToUpdate.push(newerIndex);
                 if (!dryRun) {
-                    deleteIndex(newerIndex);
+                    deleteIndex(olderIndex);
                 }
-                infoLogger.append(`  ${olderIndex.name} new size: ${olderIndex.list.length}`);
-            } else {
-                indexNameToIndex[name] = newerIndex;
+                infoLogger.append(`  ${newerIndex.name} new size: ${newerIndex.list.length}`);
             }
         });
         if (!dryRun && indexesToUpdate.length > 0) {
