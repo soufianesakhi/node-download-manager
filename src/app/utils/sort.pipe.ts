@@ -1,6 +1,28 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DownloadLinks } from '../..';
 
+const STRING_COMPARATOR = (a, b): number => {
+  if (a == null) {
+    return -1;
+  }
+  if (b == null) {
+    return 1;
+  }
+  if (("" + a).toLowerCase() < ("" + b).toLowerCase()) { return -1; }
+  if (("" + a).toLowerCase() > ("" + b).toLowerCase()) { return 1; }
+  return 0;
+};
+const NUMBER_COMPARATOR = (a, b): number => {
+  if (a == null) {
+    return -1;
+  }
+  if (b == null) {
+    return 1;
+  }
+  if (parseFloat(a) < parseFloat(b)) { return -1; }
+  if (parseFloat(a) > parseFloat(b)) { return 1; }
+  return 0;
+};
 @Pipe({
   name: 'sort'
 })
@@ -30,28 +52,10 @@ export class SortPipe implements PipeTransform {
   }
 
   getOrderByComparator(sample): (a, b) => number {
-    let comp: (a, b) => number;
     if ((isNaN(parseFloat(sample)) || !isFinite(sample))) {
-      comp = (a, b) => {
-        if (a.toLowerCase() < b.toLowerCase()) { return -1; }
-        if (a.toLowerCase() > b.toLowerCase()) { return 1; }
-        return 0;
-      };
-    } else { // number
-      comp = (a, b) => {
-        if (parseFloat(a) < parseFloat(b)) { return -1; }
-        if (parseFloat(a) > parseFloat(b)) { return 1; }
-        return 0;
-      };
+      return STRING_COMPARATOR;
+    } else {
+      return NUMBER_COMPARATOR;
     }
-    return (a, b) => {
-      if (a == null) {
-        return -1;
-      }
-      if (b == null) {
-        return 1;
-      }
-      return comp(a, b);
-    };
   }
 }
