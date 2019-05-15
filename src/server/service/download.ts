@@ -25,7 +25,7 @@ export class DownloadManager implements DownloadActionListener {
         this.requestById[id] = req;
         this.downloadNameById[id] = downloadName;
         progress(req, {
-            throttle: 100, // Progress event interval (ms)
+            throttle: 1000, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
                 id: id,

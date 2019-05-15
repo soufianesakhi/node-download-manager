@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
+import { Subject } from 'rxjs/Subject';
 // tslint:disable-next-line:max-line-length
-import { DownloadActionWSMessage, DownloadLinks, DownloadLinksIndex, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel, DownloadLinksEntry } from '../..';
+import { DownloadActionWSMessage, DownloadLinks, DownloadLinksEntry, DownloadLinksIndex, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel } from '../..';
 
 @Injectable()
 export class DownloadsService {
@@ -74,7 +74,7 @@ export class DownloadsService {
     this.webSocketClient.onopen = () => { console.log('WebSocket Client Connected'); };
     this.webSocketClient.onclose = () => {
       console.log('WebSocket Client Closed. Retrying to connect after 1s...');
-      setTimeout(this.startWebSocketConnection(), 1000);
+      setTimeout(() => this.startWebSocketConnection(), 1000);
     };
   }
 
