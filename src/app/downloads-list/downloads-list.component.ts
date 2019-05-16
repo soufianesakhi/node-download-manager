@@ -69,6 +69,10 @@ export class DownloadsListComponent implements OnInit {
     return this.selectedLinks && links._id === this.selectedLinks._id;
   }
 
+  getFullTitle(links: DownloadLinksModel) {
+    return links.artist + (links.artist ? ' - ' : '') + links.title;
+  }
+
   notIndexSelected() {
     return !this.selectedLinks.indexName;
   }
@@ -92,7 +96,7 @@ export class DownloadsListComponent implements OnInit {
   }
 
   hasMetaLinks() {
-    return this.selectedLinks.sources.length > 0 && this.selectedLinks.previews.length;
+    return this.selectedLinks.sources.length > 0 || this.selectedLinks.previews.length;
   }
 
   copyFullTitle() {
@@ -101,5 +105,11 @@ export class DownloadsListComponent implements OnInit {
 
   copyAllLinks() {
     copyText(stringifyLinks(this.selectedLinks));
+  }
+
+  openLinks() {
+    flatLinks(this.selectedLinks).forEach(link => {
+      window.open(link, '_blank');
+    });
   }
 }

@@ -33,7 +33,7 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | hasComments : checkComents | fullTitleFilter : fullTitle : filterMetadata | sort : order : ascending"
           [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)" style="max-height: 100px; overflow-y: hidden">
-          {{ links.artist }}{{ links.artist ? ' - ' : '' }}{{links.title}}
+          {{ getFullTitle(links) }}
         </li>
       </ul>
       <span *ngIf="filterMetadata.count === 0" style="text-align: center">No title found</span>
@@ -44,8 +44,12 @@
       <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': getSelectedLinksMarginTop(selectedLinksContainer)}">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
+            <b>{{ getFullTitle(selectedLinks) }}</b>
+          </li>
+          <li class="list-group-item">
             <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
             <button *ngIf="notIndexSelected()" (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
+            <button (click)="openLinks()" type="button" class="btn btn-secondary card-link">Open links</button>
           </li>
           <li *ngIf="hasMetaLinks()" class="list-group-item">
             <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
