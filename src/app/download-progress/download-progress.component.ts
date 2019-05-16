@@ -65,4 +65,25 @@ export class DownloadProgressComponent implements OnInit {
     return progress.state === "cancel";
   }
 
+  formatTime(secondsTotal: number) {
+    const minutes = Math.floor(secondsTotal / 60);
+    const seconds = Math.floor(secondsTotal - (minutes * 60));
+    return (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+  }
+
+  mockProgress() {
+    const progress: DownloadProgress = {
+      id: 1,
+      title: "Artist - Title",
+      fileName: "File Name",
+      percent: 60,
+      speed: 1,
+      remainingTime: 100,
+      remainingSize: 5,
+      state: "resume"
+    };
+    this.progressById[progress.id] = progress;
+    this.progressArray.push(progress);
+  }
+
 }

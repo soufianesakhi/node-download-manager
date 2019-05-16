@@ -19,7 +19,7 @@
               </span>
               <span *ngIf="inProgress(progress)" class="progress-metadata remaining">
                 <span class="badge badge-warning">{{progressById[progress.id].remainingSize | number:'1.0-0' }} MB</span>
-                <span class="badge badge-warning">{{progressById[progress.id].remainingTime | number:'1.0-0'}} s</span>
+                <span class="badge badge-warning">{{formatTime(progressById[progress.id].remainingTime)}}</span>
               </span>
             </div>
           </div>
