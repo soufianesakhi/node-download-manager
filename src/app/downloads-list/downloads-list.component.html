@@ -41,7 +41,7 @@
 
     <!-- Selected links details-->
     <div *ngIf="selectedLinks" class="col-md-5">
-      <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': getSelectedLinksMarginTop(selectedLinksContainer)}">
+      <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <b>{{ getFullTitle(selectedLinks) }}</b>

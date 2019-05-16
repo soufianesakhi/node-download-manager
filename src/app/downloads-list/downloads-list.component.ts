@@ -55,14 +55,9 @@ export class DownloadsListComponent implements OnInit {
   onSelect(selectedLinks: DownloadLinksModel, event: Event, allLinksContainer: Element) {
     const selected = (event.target as Element).getBoundingClientRect();
     const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
-    this.selectedLinksMarginTop = selected.height + selected.top - containerOffsetTop;
+    this.selectedLinksMarginTop = Math.max(selected.top - containerOffsetTop - 150, 0);
     this.selectedLinks = selectedLinks;
     this.downloadSubmitted = false;
-  }
-
-  getSelectedLinksMarginTop(selectedLinksContainer: Element) {
-    const selectedLinksHeight = selectedLinksContainer.getBoundingClientRect().height;
-    return Math.max(this.selectedLinksMarginTop - selectedLinksHeight, 0);
   }
 
   isSelected(links: DownloadLinksModel) {
