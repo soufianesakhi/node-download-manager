@@ -56,7 +56,11 @@
             <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
-            <b>Id</b>: {{selectedLinks._id}}
+            <span>
+              <b>Id</b>: {{selectedLinks._id}}
+            </span>
+            <button (click)="copyId(idCopyConfirm)" type="button" class="btn btn-secondary card-link">Copy</button>
+            <span #idCopyConfirm style="display: none">Copied !</span>
           </li>
           <li *ngIf="!notIndexSelected()" class="list-group-item">
             <b>Index</b>: {{selectedLinks.indexName}}

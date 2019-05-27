@@ -102,6 +102,14 @@ export class DownloadsListComponent implements OnInit {
     copyText(stringifyLinks(this.selectedLinks));
   }
 
+  copyId(idCopyConfirm: HTMLElement) {
+    copyText(this.selectedLinks._id);
+    idCopyConfirm.style.display = "inline";
+    setTimeout(() => {
+      idCopyConfirm.style.display = "none";
+    }, 1000);
+  }
+
   openLinks() {
     flatLinks(this.selectedLinks).forEach(link => {
       window.open(link, '_blank');
