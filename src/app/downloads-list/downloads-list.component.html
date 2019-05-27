@@ -52,8 +52,8 @@
             <button (click)="openLinks()" type="button" class="btn btn-secondary card-link">Open links</button>
           </li>
           <li *ngIf="hasMetaLinks()" class="list-group-item">
-            <a *ngFor="let source of selectedLinks.sources" href="{{source}}" class="card-link">Source</a>
-            <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" class="card-link">Preview</a>
+            <a *ngFor="let source of selectedLinks.sources" href="{{source}}" target="_blank" class="card-link">Source</a>
+            <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" target="_blank" class="card-link">Preview</a>
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
             <span>
@@ -93,7 +93,7 @@
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
             <div *ngFor="let url of flatLinks(selectedLinks)">
-              <a [href]="url" class="card-link">{{url}}</a>
+              <a [href]="url" target="_blank" class="card-link">{{url}}</a>
             </div>
           </li>
         </ul>
