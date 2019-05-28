@@ -18,10 +18,14 @@ export class DownloadProgressComponent implements OnInit {
     this.downloadsService.downloadProgressSubscribe(progress => {
       const id = progress.id;
       const firstProgressForId = this.progressById[id] == null;
+      if (progress.state === "error") {
+        progress.state = "cancel";
+      }
       this.progressById[id] = progress;
       if (firstProgressForId) {
         this.progressArray.push({
           id: progress.id,
+          _id: progress._id,
           title: progress.title,
           fileName: progress.fileName
         });
@@ -39,6 +43,12 @@ export class DownloadProgressComponent implements OnInit {
 
   resume(id: number) {
     this.do("resume", id);
+  }
+
+  restart(id) {
+    this.downloadsService.downloadLinks(this.progressById[id]._id).subscribe(() => {
+      console.log("Download restarted");
+    });
   }
 
   do(action: DownloadState, id: number) {
@@ -74,6 +84,7 @@ export class DownloadProgressComponent implements OnInit {
   mockProgress() {
     const progress: DownloadProgress = {
       id: 1,
+      _id: 1,
       title: "Artist - Title",
       fileName: "File Name",
       percent: 60,

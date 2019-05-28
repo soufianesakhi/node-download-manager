@@ -85,7 +85,7 @@ export class DownloadsListComponent implements OnInit {
 
   downloadSelect() {
     this.downloadSubmitted = true;
-    this.downloadsService.downloadLinks(this.selectedLinks).subscribe(() => {
+    this.downloadsService.downloadLinks(this.selectedLinks._id).subscribe(() => {
       console.log("Download submitted");
     });
   }

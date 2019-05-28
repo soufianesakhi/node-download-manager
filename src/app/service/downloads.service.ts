@@ -94,12 +94,12 @@ export class DownloadsService {
     return this.http.get('/spi/download').map<any, DownloadSPI>(res => res.json());
   }
 
-  downloadLinks(data: DownloadLinksModel) {
+  downloadLinks(id) {
     if (!this.spi.supported) {
       console.warn("Download not supported");
       return;
     }
-    return this.http.post(this.spi.path + '/' + data._id, "");
+    return this.http.post(this.spi.path + '/' + id, "");
   }
 
 }

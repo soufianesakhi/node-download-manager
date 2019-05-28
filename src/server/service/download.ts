@@ -17,19 +17,26 @@ export class DownloadManager implements DownloadActionListener {
         this.webSocketManager.registerDownloadActionListener(this);
     }
 
-    download(directDownloadURI: string, title: string, fileName: string, id: number, successCallback: (finalFilePath: string) => void) {
+    download(directDownloadURI: string,
+            title: string,
+            fileName: string,
+            _id: number,
+            index: number,
+            successCallback: (finalFilePath: string) => void,
+            errorCallback: (errorMsg: string) => void) {
+        const id = _id + index;
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
         const downloadName = title + " ;; " + fileName + " ;; " + id;
         this.appendLog("start", downloadName);
-        const req = request(directDownloadURI);
+        const req = request(directDownloadURI, {timeout: 20 * 1000});
         this.requestById[id] = req;
         this.downloadNameById[id] = downloadName;
-        let error = false;
         progress(req, {
             throttle: 1000, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
             const p: DownloadProgress = {
                 id: id,
+                _id: _id,
                 title: title,
                 fileName: fileName,
                 percent: this.format(state.percent * 100),
@@ -44,15 +51,15 @@ export class DownloadManager implements DownloadActionListener {
                 id: id
             });
         }).on('error', (err: Error) => {
-            error = true;
-            notify("Download error", fileName + "\n" + err.message);
             console.error(err);
-            this.appendLog("error", downloadName + "\n" + err);
+            this.appendLog("error", downloadName + "\n\t==>" + err);
             this.cleanRequest(id);
+            this.stateById[id] = "error";
         }).on('end', () => {
             const state = this.stateById[id];
             const p: DownloadProgress = {
                 id: id,
+                _id: _id,
                 title: title,
                 fileName: fileName,
                 percent: 100,
@@ -66,18 +73,20 @@ export class DownloadManager implements DownloadActionListener {
                 data: p,
                 id: id
             });
-            if (state === "cancel") {
+            this.appendLog("end", downloadName);
+            this.cleanRequest(id);
+            if (state === "cancel" || state === "error") {
                 fs.unlink(downloadFileDestination, unlErr => {
-                    notify("Download cancelled", fileName);
+                    const errorMsg = "Download " + state;
+                    notify(errorMsg, id);
+                    errorCallback(errorMsg);
                     if (unlErr) {
                         return console.error(unlErr);
                     }
                 });
-            } else if (!error) {
+            } else {
                 successCallback(downloadFileDestination);
             }
-            this.appendLog("end", downloadName);
-            this.cleanRequest(id);
         }).pipe(fs.createWriteStream(downloadFileDestination));
     }
 

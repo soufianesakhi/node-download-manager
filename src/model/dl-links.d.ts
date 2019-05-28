@@ -25,11 +25,12 @@ declare module "model" {
 
     interface DownloadProgressMetaData {
         id: number;
+        _id: any;
         title: string;
         fileName: string;
     }
 
-    type DownloadState = "cancel" | "pause" | "resume";
+    type DownloadState = "cancel" | "pause" | "resume" | "error";
 
     interface DownloadProgress extends DownloadProgressMetaData {
         /** Between 0 and 100 */

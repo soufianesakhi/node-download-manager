@@ -29,6 +29,9 @@
           <button (click)="pause(progress.id)" type="button" class="btn btn-light btn-sm">Pause</button>
           <button (click)="resume(progress.id)" type="button" class="btn btn-light btn-sm">Resume</button>
         </li>
+        <li *ngIf="isCancelled(progress)" class="list-group-item" style="text-align: center;">
+          <button (click)="restart(progress.id)" type="button" class="btn btn-light btn-sm">Restart</button>
+        </li>
       </ul>
     </div>
   </div>
