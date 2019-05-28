@@ -17,13 +17,14 @@ export class DownloadManager implements DownloadActionListener {
         this.webSocketManager.registerDownloadActionListener(this);
     }
 
-    download(directDownloadURI: string, title: string, fileName: string, id: number, endCallback: (finalFilePath: string) => void) {
+    download(directDownloadURI: string, title: string, fileName: string, id: number, successCallback: (finalFilePath: string) => void) {
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
         const downloadName = title + " ;; " + fileName + " ;; " + id;
         this.appendLog("start", downloadName);
         const req = request(directDownloadURI);
         this.requestById[id] = req;
         this.downloadNameById[id] = downloadName;
+        let error = false;
         progress(req, {
             throttle: 1000, // Progress event interval (ms)
         }).on('progress', (state: RequestProgressState) => {
@@ -43,6 +44,7 @@ export class DownloadManager implements DownloadActionListener {
                 id: id
             });
         }).on('error', (err: Error) => {
+            error = true;
             notify("Download error", fileName + "\n" + err.message);
             console.error(err);
             this.appendLog("error", downloadName + "\n" + err);
@@ -64,15 +66,15 @@ export class DownloadManager implements DownloadActionListener {
                 data: p,
                 id: id
             });
-            if (state !== "cancel") {
-                endCallback(downloadFileDestination);
-            } else {
+            if (state === "cancel") {
                 fs.unlink(downloadFileDestination, unlErr => {
                     notify("Download cancelled", fileName);
                     if (unlErr) {
                         return console.error(unlErr);
                     }
                 });
+            } else if (!error) {
+                successCallback(downloadFileDestination);
             }
             this.appendLog("end", downloadName);
             this.cleanRequest(id);
