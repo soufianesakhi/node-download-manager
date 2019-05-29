@@ -50,6 +50,10 @@ export class DownloadsListComponent implements OnInit {
       if (ascending != null) {
         this.ascending = ascending === "true";
       }
+      const category = params['cat'];
+      if (category != null) {
+        this.category = category;
+      }
     });
   }
 
