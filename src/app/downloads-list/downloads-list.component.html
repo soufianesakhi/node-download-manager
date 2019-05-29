@@ -43,8 +43,13 @@
     <div *ngIf="selectedLinks" class="col-md-5">
       <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">
+          <li *ngIf="!editingSelectedTitle" class="list-group-item">
             <b>{{ getFullTitle(selectedLinks) }}</b>
+            <button *ngIf="notIndexSelected()" (click)="editingSelectedTitle = true" type="button" class="btn btn-secondary card-link">🖉</button>
+          </li>
+          <li *ngIf="editingSelectedTitle && notIndexSelected()" class="list-group-item">
+              <textarea class="form-control" rows="2" [ngModel]="getFullTitle(selectedLinks)" (ngModelChange)="setFullTitle($event)" required></textarea>
+              <button (click)="saveSelectedLinks(); editingSelectedTitle = false;" type="button" class="btn btn-secondary card-link">✓</button>
           </li>
           <li class="list-group-item">
             <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
@@ -68,7 +73,10 @@
           <li class="list-group-item">
             <b>Category</b>: {{selectedLinks.category}}
             <span *ngIf="selectedLinks.priority">
-              <b>Priority</b>: {{selectedLinks.priority}}</span>
+              <b>Priority</b>: 
+              <input class="form-control" name="priorityInput" [(ngModel)]="selectedLinks.priority" type="number" style="width: 75px; display: inline-block;" min="1" required>
+              <button (click)="saveSelectedLinks()" type="button" class="btn btn-secondary card-link">✓</button>
+            </span>
           </li>
           <li class="list-group-item">
             <span *ngIf="selectedLinks.sizeMB">

@@ -1,10 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { DownloadLinksModel, DownloadLinks } from '../..';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
+import { DownloadLinks, DownloadLinksModel } from '../..';
 import { DownloadsService } from '../service/downloads.service';
-import { stringifyLinks, parseLinks } from '../utils/downloads-utils';
+import { parseLinks, setFullTitle, stringifyLinks } from '../utils/downloads-utils';
 
 @Component({
   selector: 'app-download-editor',
@@ -80,9 +79,7 @@ export class DownloadEditorComponent implements OnInit {
   }
 
   setFullTitle(artistAndTitle: string) {
-    const iSep = artistAndTitle.indexOf("-");
-    this.links.artist = artistAndTitle.substring(0, iSep).trim();
-    this.links.title = artistAndTitle.substring(iSep + 1).trim();
+    setFullTitle(this.links, artistAndTitle);
   }
 
   setAllLinks(allLinks: string) {

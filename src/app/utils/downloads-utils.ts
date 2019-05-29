@@ -32,6 +32,12 @@ export function parseLinks(txt: string) {
     return linksArray;
 }
 
+export function setFullTitle(links: DownloadLinks, artistAndTitle: string) {
+    const iSep = artistAndTitle.indexOf("-");
+    links.artist = artistAndTitle.substring(0, iSep).trim();
+    links.title = artistAndTitle.substring(iSep + 1).trim();
+}
+
 export function getHostName(url) {
     const l = document.createElement("a");
     l.href = url;

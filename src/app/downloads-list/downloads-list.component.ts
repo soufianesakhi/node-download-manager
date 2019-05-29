@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { DownloadLinksEntry, DownloadLinksModel } from '../..';
 import { DownloadsService } from '../service/downloads.service';
-import { copyText, flatLinks, removeFromArray, stringifyLinks } from '../utils/downloads-utils';
+import { copyText, flatLinks, removeFromArray, setFullTitle, stringifyLinks } from '../utils/downloads-utils';
 
 @Component({
   selector: 'app-downloads-list',
@@ -21,6 +21,7 @@ export class DownloadsListComponent implements OnInit {
   filterMetadata = { count: 0 };
   downloadSupported: boolean;
   downloadSubmitted = false;
+  editingSelectedTitle = false;
 
   constructor(private downloadsService: DownloadsService,
     private activatedRoute: ActivatedRoute) { }
@@ -90,12 +91,23 @@ export class DownloadsListComponent implements OnInit {
     });
   }
 
+  saveSelectedLinks() {
+    this.downloadsService.updateDownloadLinks(this.selectedLinks).subscribe(result => {
+      console.log("Saved selected links");
+      console.log(result);
+    });
+  }
+
   hasMetaLinks() {
     return this.selectedLinks.sources.length > 0 || this.selectedLinks.previews.length;
   }
 
   copyFullTitle() {
     copyText(this.selectedLinks.artist + " - " + this.selectedLinks.title);
+  }
+
+  setFullTitle(artistAndTitle: string) {
+    setFullTitle(this.selectedLinks, artistAndTitle);
   }
 
   copyAllLinks() {
