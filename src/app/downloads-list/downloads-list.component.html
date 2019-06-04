@@ -98,6 +98,7 @@
             </a>
             <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
             <button *ngIf="downloadSupported" (click)="downloadSelect()" [disabled]="downloadSubmitted" type="button" class="btn btn-secondary card-link">Download</button>
+            <button *ngIf="downloadSupported" (click)="checkSelect()" type="button" class="btn btn-secondary card-link">Check</button>
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
             <div *ngFor="let url of flatLinks(selectedLinks)">

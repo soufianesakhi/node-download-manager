@@ -95,6 +95,12 @@ export class DownloadsListComponent implements OnInit {
     });
   }
 
+  checkSelect() {
+    this.downloadsService.checkLinks(this.selectedLinks._id).subscribe(() => {
+      console.log("Check submitted");
+    });
+  }
+
   saveSelectedLinks() {
     this.downloadsService.updateDownloadLinks(this.selectedLinks).subscribe(result => {
       console.log("Saved selected links");

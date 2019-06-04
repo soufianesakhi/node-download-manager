@@ -102,4 +102,12 @@ export class DownloadsService {
     return this.http.post(this.spi.path + '/' + id, "");
   }
 
+  checkLinks(id) {
+    if (!this.spi.supported) {
+      console.warn("Download not supported");
+      return;
+    }
+    return this.http.put(this.spi.path + '/' + id, "");
+  }
+
 }
