@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
-import { DownloadLinks, DownloadLinksModel } from '../..';
-import { DownloadsService } from '../service/downloads.service';
-import { parseLinks, setFullTitle, stringifyLinks } from '../utils/downloads-utils';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Observable } from "rxjs";
+import { DownloadLinks, DownloadLinksModel } from "../..";
+import { DownloadsService } from "../service/downloads.service";
+import {
+  parseLinks,
+  setFullTitle,
+  stringifyLinks
+} from "../utils/downloads-utils";
 
 @Component({
-  selector: 'app-download-editor',
-  templateUrl: './download-editor.component.html'
+  selector: "app-download-editor",
+  templateUrl: "./download-editor.component.html"
 })
 export class DownloadEditorComponent implements OnInit {
   add: boolean;
@@ -30,7 +34,7 @@ export class DownloadEditorComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.id = params.get('id');
+      this.id = params.get("id");
       this.updateDownloadLinks();
     });
     this.route.url.subscribe(url => {
@@ -47,11 +51,14 @@ export class DownloadEditorComponent implements OnInit {
     if (!this.id) {
       return;
     }
-    this.downloadsService.getDownloadLinks(this.id).subscribe(links => {
-      this.links = links;
-    }, (error) => {
-      alert("Invalid id: " + this.id);
-    });
+    this.downloadsService.getDownloadLinks(this.id).subscribe(
+      links => {
+        this.links = links;
+      },
+      error => {
+        alert("Invalid id: " + this.id);
+      }
+    );
   }
 
   onSubmit() {
@@ -61,14 +68,17 @@ export class DownloadEditorComponent implements OnInit {
     } else {
       serviceObservable = this.downloadsService.updateDownloadLinks(this.links);
     }
-    serviceObservable.subscribe(l => {
-      if (l._id) {
-        alert(l._id);
+    serviceObservable.subscribe(
+      l => {
+        if (l._id) {
+          alert(l._id);
+        }
+      },
+      error => {
+        alert("Error");
+        console.error(error);
       }
-    }, (error) => {
-      alert("Error");
-      console.error(error);
-    });
+    );
   }
 
   getFullTitle() {
@@ -91,6 +101,9 @@ export class DownloadEditorComponent implements OnInit {
   }
 
   parseArray(txt: string): string[] {
-    return txt.split("\n").map(s => s.trim()).filter(s => s !== "");
+    return txt
+      .split("\n")
+      .map(s => s.trim())
+      .filter(s => s !== "");
   }
 }
