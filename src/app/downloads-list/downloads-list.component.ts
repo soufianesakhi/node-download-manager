@@ -1,17 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
-import { DownloadLinksEntry, DownloadLinksModel } from '../..';
-import { DownloadsService } from '../service/downloads.service';
-import { copyText, flatLinks, removeFromArray, setFullTitle, stringifyLinks } from '../utils/downloads-utils';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Params } from "@angular/router";
+import { DownloadLinksEntry, DownloadLinksModel } from "../..";
+import { DownloadsService } from "../service/downloads.service";
+import {
+  copyText,
+  flatLinks,
+  removeFromArray,
+  setFullTitle,
+  stringifyLinks
+} from "../utils/downloads-utils";
 
 @Component({
-  selector: 'app-downloads-list',
-  templateUrl: './downloads-list.component.html'
+  selector: "app-downloads-list",
+  templateUrl: "./downloads-list.component.html"
 })
 export class DownloadsListComponent implements OnInit {
   downloadLinks: DownloadLinksEntry[] = [];
   selectedLinks: DownloadLinksEntry;
-  selectedLinksMarginTop = 0;
   fullTitle = "";
   order = "createdAt";
   ascending = false;
@@ -23,8 +28,10 @@ export class DownloadsListComponent implements OnInit {
   downloadSubmitted = false;
   editingSelectedTitle = false;
 
-  constructor(private downloadsService: DownloadsService,
-    private activatedRoute: ActivatedRoute) { }
+  constructor(
+    private downloadsService: DownloadsService,
+    private activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
@@ -40,27 +47,28 @@ export class DownloadsListComponent implements OnInit {
       this.downloadSupported = spi.supported;
     });
     this.activatedRoute.queryParams.subscribe((params: Params) => {
-      const order = params['sort'];
+      const order = params["sort"];
       if (order === "date") {
         this.order = "createdAt";
       } else if (order === "prio") {
         this.order = "priority";
       }
-      const ascending = params['asc'];
+      const ascending = params["asc"];
       if (ascending != null) {
         this.ascending = ascending === "true";
       }
-      const category = params['cat'];
+      const category = params["cat"];
       if (category != null) {
         this.category = category;
       }
     });
   }
 
-  onSelect(selectedLinks: DownloadLinksModel, event: Event, allLinksContainer: Element) {
-    const selected = (event.target as Element).getBoundingClientRect();
-    const containerOffsetTop = allLinksContainer.getBoundingClientRect().top;
-    this.selectedLinksMarginTop = Math.max(selected.top - containerOffsetTop - 150, 0);
+  onSelect(
+    selectedLinks: DownloadLinksModel,
+    event: Event,
+    allLinksContainer: Element
+  ) {
     this.selectedLinks = selectedLinks;
     this.downloadSubmitted = false;
   }
@@ -70,7 +78,7 @@ export class DownloadsListComponent implements OnInit {
   }
 
   getFullTitle(links: DownloadLinksModel) {
-    return links.artist + (links.artist ? ' - ' : '') + links.title;
+    return links.artist + (links.artist ? " - " : "") + links.title;
   }
 
   notIndexSelected() {
@@ -78,21 +86,26 @@ export class DownloadsListComponent implements OnInit {
   }
 
   deleteSelect() {
-    this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(l => {
-      removeFromArray(this.downloadLinks, this.selectedLinks);
-      this.downloadLinks = this.downloadLinks.slice();
-      this.selectedLinks = this.downloadLinks[0];
-      this.filterMetadata.count--;
-    }, (error) => {
-      console.error(error);
-    });
+    this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(
+      l => {
+        removeFromArray(this.downloadLinks, this.selectedLinks);
+        this.downloadLinks = this.downloadLinks.slice();
+        this.selectedLinks = this.downloadLinks[0];
+        this.filterMetadata.count--;
+      },
+      error => {
+        console.error(error);
+      }
+    );
   }
 
   downloadSelect() {
     this.downloadSubmitted = true;
-    this.downloadsService.downloadLinks(this.selectedLinks._id).subscribe(() => {
-      console.log("Download submitted");
-    });
+    this.downloadsService
+      .downloadLinks(this.selectedLinks._id)
+      .subscribe(() => {
+        console.log("Download submitted");
+      });
   }
 
   checkSelect() {
@@ -102,14 +115,19 @@ export class DownloadsListComponent implements OnInit {
   }
 
   saveSelectedLinks() {
-    this.downloadsService.updateDownloadLinks(this.selectedLinks).subscribe(result => {
-      console.log("Saved selected links");
-      console.log(result);
-    });
+    this.downloadsService
+      .updateDownloadLinks(this.selectedLinks)
+      .subscribe(result => {
+        console.log("Saved selected links");
+        console.log(result);
+      });
   }
 
   hasMetaLinks() {
-    return this.selectedLinks.sources.length > 0 || this.selectedLinks.previews.length;
+    return (
+      this.selectedLinks.sources.length > 0 ||
+      this.selectedLinks.previews.length
+    );
   }
 
   copyFullTitle() {
@@ -134,7 +152,7 @@ export class DownloadsListComponent implements OnInit {
 
   openLinks() {
     flatLinks(this.selectedLinks).forEach(link => {
-      window.open(link, '_blank');
+      window.open(link, "_blank");
     });
   }
 }

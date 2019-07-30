@@ -1,108 +1,232 @@
 <div class="container-fluid">
   <div class="row">
-
     <!-- Search -->
     <div class="col-md-12">
-      <span>Category:
-        <app-category-select [(value)]="category" [emptyFirst]="true"></app-category-select>
+      <span
+        >Category:
+        <app-category-select
+          [(value)]="category"
+          [emptyFirst]="true"
+        ></app-category-select>
       </span>
-      <span>Search:
-        <input [(ngModel)]="fullTitle">
+      <span
+        >Search:
+        <input [(ngModel)]="fullTitle" />
       </span>
-      <span>Sort by:
+      <span
+        >Sort by:
         <select [(ngModel)]="order">
           <option value="createdAt">Created</option>
           <option value="priority">Priority</option>
         </select>
       </span>
-      <span>Ascending:
-        <input type="checkbox" [(ngModel)]="ascending">
+      <span
+        >Ascending:
+        <input type="checkbox" [(ngModel)]="ascending" />
       </span>
-      <span>Has Comments:
+      <span
+        >Has Comments:
         <select [(ngModel)]="checkComents">
           <option value=""></option>
           <option value="true">true</option>
           <option value="false">false</option>
         </select>
       </span>
-      <span> ({{filterMetadata.count + ' of ' + downloadLinks.length}})</span>
+      <span> ({{ filterMetadata.count + " of " + downloadLinks.length }})</span>
     </div>
 
     <!-- All links -->
     <div #allLinksContainer class="col-md-7 card">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item badge" *ngFor="let links of downloadLinks | categoryFilter : category | hasComments : checkComents | fullTitleFilter : fullTitle : filterMetadata | sort : order : ascending"
-          [class.text-primary]="isSelected(links)" (click)="onSelect(links, $event, allLinksContainer)" style="max-height: 100px; overflow-y: hidden">
-          {{ getFullTitle(links) }}
-        </li>
+        <cdk-virtual-scroll-viewport
+          itemSize="18"
+          style="height:80vh; margin-right: -15px"
+        >
+          <li
+            class="list-group-item badge"
+            *cdkVirtualFor="
+              let links of downloadLinks
+                | categoryFilter: category
+                | hasComments: checkComents
+                | fullTitleFilter: fullTitle:filterMetadata
+                | sort: order:ascending
+            "
+            [class.text-primary]="isSelected(links)"
+            (click)="onSelect(links, $event, allLinksContainer)"
+            style="max-height: 100px; overflow-y: hidden"
+          >
+            {{ getFullTitle(links) }}
+          </li>
+        </cdk-virtual-scroll-viewport>
       </ul>
-      <span *ngIf="filterMetadata.count === 0" style="text-align: center">No title found</span>
+      <span *ngIf="filterMetadata.count === 0" style="text-align: center"
+        >No title found</span
+      >
     </div>
 
     <!-- Selected links details-->
     <div *ngIf="selectedLinks" class="col-md-5">
-      <div #selectedLinksContainer class="card" [ngStyle]="{'margin-top.px': selectedLinksMarginTop}">
+      <div #selectedLinksContainer class="card">
         <ul class="list-group list-group-flush">
           <li *ngIf="!editingSelectedTitle" class="list-group-item">
             <b>{{ getFullTitle(selectedLinks) }}</b>
-            <button *ngIf="notIndexSelected()" (click)="editingSelectedTitle = true" type="button" class="btn btn-secondary card-link">🖉</button>
+            <button
+              *ngIf="notIndexSelected()"
+              (click)="editingSelectedTitle = true"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              🖉
+            </button>
           </li>
-          <li *ngIf="editingSelectedTitle && notIndexSelected()" class="list-group-item">
-              <textarea class="form-control" rows="2" [ngModel]="getFullTitle(selectedLinks)" (ngModelChange)="setFullTitle($event)" required></textarea>
-              <button (click)="saveSelectedLinks(); editingSelectedTitle = false;" type="button" class="btn btn-secondary card-link">✓</button>
+          <li
+            *ngIf="editingSelectedTitle && notIndexSelected()"
+            class="list-group-item"
+          >
+            <textarea
+              class="form-control"
+              rows="2"
+              [ngModel]="getFullTitle(selectedLinks)"
+              (ngModelChange)="setFullTitle($event)"
+              required
+            ></textarea>
+            <button
+              (click)="saveSelectedLinks(); editingSelectedTitle = false"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              ✓
+            </button>
           </li>
           <li class="list-group-item">
-            <button (click)="copyFullTitle()" type="button" class="btn btn-secondary card-link">Copy title</button>
-            <button *ngIf="notIndexSelected()" (click)="copyAllLinks()" type="button" class="btn btn-secondary card-link">Copy links</button>
-            <button (click)="openLinks()" type="button" class="btn btn-secondary card-link">Open links</button>
+            <button
+              (click)="copyFullTitle()"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Copy title
+            </button>
+            <button
+              *ngIf="notIndexSelected()"
+              (click)="copyAllLinks()"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Copy links
+            </button>
+            <button
+              (click)="openLinks()"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Open links
+            </button>
           </li>
           <li *ngIf="hasMetaLinks()" class="list-group-item">
-            <a *ngFor="let source of selectedLinks.sources" href="{{source}}" target="_blank" class="card-link">Source</a>
-            <a *ngFor="let preview of selectedLinks.previews" href="{{preview}}" target="_blank" class="card-link">Preview</a>
+            <a
+              *ngFor="let source of selectedLinks.sources"
+              href="{{ source }}"
+              target="_blank"
+              class="card-link"
+              >Source</a
+            >
+            <a
+              *ngFor="let preview of selectedLinks.previews"
+              href="{{ preview }}"
+              target="_blank"
+              class="card-link"
+              >Preview</a
+            >
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
-            <span>
-              <b>Id</b>: {{selectedLinks._id}}
-            </span>
-            <button (click)="copyId(idCopyConfirm)" type="button" class="btn btn-secondary card-link">Copy</button>
+            <span> <b>Id</b>: {{ selectedLinks._id }} </span>
+            <button
+              (click)="copyId(idCopyConfirm)"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Copy
+            </button>
             <span #idCopyConfirm style="display: none">Copied !</span>
           </li>
           <li *ngIf="!notIndexSelected()" class="list-group-item">
-            <b>Index</b>: {{selectedLinks.indexName}}
+            <b>Index</b>: {{ selectedLinks.indexName }}
           </li>
           <li class="list-group-item">
-            <b>Category</b>: {{selectedLinks.category}}
+            <b>Category</b>: {{ selectedLinks.category }}
             <span *ngIf="selectedLinks.priority">
-              <b>Priority</b>: 
-              <input class="form-control" name="priorityInput" [(ngModel)]="selectedLinks.priority" type="number" style="width: 75px; display: inline-block;" min="1" required>
-              <button (click)="saveSelectedLinks()" type="button" class="btn btn-secondary card-link">✓</button>
+              <b>Priority</b>:
+              <input
+                class="form-control"
+                name="priorityInput"
+                [(ngModel)]="selectedLinks.priority"
+                type="number"
+                style="width: 75px; display: inline-block;"
+                min="1"
+                required
+              />
+              <button
+                (click)="saveSelectedLinks()"
+                type="button"
+                class="btn btn-secondary card-link"
+              >
+                ✓
+              </button>
             </span>
           </li>
           <li class="list-group-item">
             <span *ngIf="selectedLinks.sizeMB">
-              <b>Size</b>: {{selectedLinks.sizeMB}} MB
+              <b>Size</b>: {{ selectedLinks.sizeMB }} MB
             </span>
             <span *ngIf="selectedLinks.comments">
-              <b>Comments</b>: {{selectedLinks.comments}}
+              <b>Comments</b>: {{ selectedLinks.comments }}
             </span>
             <span *ngIf="selectedLinks.createdAt">
-              <b>Created</b>: {{selectedLinks.createdAt | date : 'dd/MM/yyyy HH:mm'}}
+              <b>Created</b>:
+              {{ selectedLinks.createdAt | date: "dd/MM/yyyy HH:mm" }}
             </span>
             <span *ngIf="!selectedLinks.createdAt && selectedLinks.updatedAt">
-              <b>Updated</b>: {{selectedLinks.updatedAt | date : 'dd/MM/yyyy HH:mm'}}
+              <b>Updated</b>:
+              {{ selectedLinks.updatedAt | date: "dd/MM/yyyy HH:mm" }}
             </span>
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
-            <a [routerLink]="['/edit-downloads', selectedLinks._id]" class="card-link">
-              <button type="button" class="btn btn-secondary card-link">Edit</button>
+            <a
+              [routerLink]="['/edit-downloads', selectedLinks._id]"
+              class="card-link"
+            >
+              <button type="button" class="btn btn-secondary card-link">
+                Edit
+              </button>
             </a>
-            <button (click)="deleteSelect()" type="button" class="btn btn-secondary card-link">Delete</button>
-            <button *ngIf="downloadSupported" (click)="downloadSelect()" [disabled]="downloadSubmitted" type="button" class="btn btn-secondary card-link">Download</button>
-            <button *ngIf="downloadSupported" (click)="checkSelect()" type="button" class="btn btn-secondary card-link">Check</button>
+            <button
+              (click)="deleteSelect()"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Delete
+            </button>
+            <button
+              *ngIf="downloadSupported"
+              (click)="downloadSelect()"
+              [disabled]="downloadSubmitted"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Download
+            </button>
+            <button
+              *ngIf="downloadSupported"
+              (click)="checkSelect()"
+              type="button"
+              class="btn btn-secondary card-link"
+            >
+              Check
+            </button>
           </li>
           <li *ngIf="notIndexSelected()" class="list-group-item">
             <div *ngFor="let url of flatLinks(selectedLinks)">
-              <a [href]="url" target="_blank" class="card-link">{{url}}</a>
+              <a [href]="url" target="_blank" class="card-link">{{ url }}</a>
             </div>
           </li>
         </ul>
