@@ -1,4 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit
+} from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { DownloadLinksEntry, DownloadLinksModel } from "../..";
 import { DownloadsService } from "../service/downloads.service";
@@ -12,7 +17,8 @@ import {
 
 @Component({
   selector: "app-downloads-list",
-  templateUrl: "./downloads-list.component.html"
+  templateUrl: "./downloads-list.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DownloadsListComponent implements OnInit {
   downloadLinks: DownloadLinksEntry[] = [];
@@ -30,18 +36,20 @@ export class DownloadsListComponent implements OnInit {
 
   constructor(
     private downloadsService: DownloadsService,
+    private changeDetectorRef: ChangeDetectorRef,
     private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
       this.downloadLinks.push(...downloadLinks);
-      this.downloadLinks = this.downloadLinks.slice();
+      this.updateDownloadLinks();
     });
     this.downloadsService.newDownloadLinksSubscribe(links => {
       this.downloadLinks.splice(0, 0, links);
       this.filterMetadata.count++;
       this.selectedLinks = links;
+      this.updateDownloadLinks();
     });
     this.downloadsService.getDownloadSPI().subscribe(spi => {
       this.downloadSupported = spi.supported;
@@ -89,14 +97,19 @@ export class DownloadsListComponent implements OnInit {
     this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(
       l => {
         removeFromArray(this.downloadLinks, this.selectedLinks);
-        this.downloadLinks = this.downloadLinks.slice();
         this.selectedLinks = this.downloadLinks[0];
         this.filterMetadata.count--;
+        this.updateDownloadLinks();
       },
       error => {
         console.error(error);
       }
     );
+  }
+
+  private updateDownloadLinks() {
+    this.downloadLinks = [...this.downloadLinks];
+    this.changeDetectorRef.detectChanges();
   }
 
   downloadSelect() {

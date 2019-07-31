@@ -56,7 +56,9 @@ export class DownloadsService {
   }
 
   deleteDownloadLinks(links: DownloadLinksModel) {
-    return this.http.delete("/api/downloads/" + links._id);
+    return this.http.delete("/api/downloads/" + links._id, {
+      responseType: "text"
+    });
   }
 
   postDownloadLinks(links: DownloadLinks) {
