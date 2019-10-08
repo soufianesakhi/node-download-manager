@@ -1,17 +1,22 @@
 import * as fs from 'fs';
 import { DownloadProgress, DownloadState } from 'model';
 import * as path from 'path';
-import * as request from 'request';
-import * as progress from 'request-progress';
+import { Subscription } from 'rxjs';
+import { startDownload } from 'su-downloader3';
 import { notify } from '../util/utils';
 import { DownloadActionListener, DownloadLinksWebSocketManager } from './websocket';
 
 
 export class DownloadManager implements DownloadActionListener {
     private downloadsLogFile: string;
-    requestById: { [id: number]: request.Request } = {};
-    downloadNameById: { [id: number]: string } = {};
-    stateById: { [id: number]: DownloadState } = {};
+    requestById: { [id: number]: Subscription } = {};
+    metaById: { [id: number]: DownloadMetaData } = {};
+    downloaderOptions = {
+        threads: 2,
+        throttleRate: 1000,
+        timeout: 20 * 1000
+    };
+
     constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
         this.webSocketManager.registerDownloadActionListener(this);
@@ -27,75 +32,99 @@ export class DownloadManager implements DownloadActionListener {
         const id = _id + index;
         const downloadFileDestination = path.join(this.downloadDirectory, fileName);
         const downloadName = title + " ;; " + fileName + " ;; " + id;
+        const meta: DownloadMetaData = {
+            _id, id, title, fileName, downloadName, downloadFileDestination, directDownloadURI,
+            successCallback, errorCallback
+        };
+        this.metaById[id] = meta;
+        this.downloadStart(meta);
         this.appendLog("start", downloadName);
-        const req = request(directDownloadURI, {timeout: 20 * 1000});
-        this.requestById[id] = req;
-        this.downloadNameById[id] = downloadName;
-        progress(req, {
-            throttle: 1000, // Progress event interval (ms)
-        }).on('progress', (state: RequestProgressState) => {
-            const p: DownloadProgress = {
-                id: id,
-                _id: _id,
-                title: title,
-                fileName: fileName,
-                percent: this.format(state.percent * 100),
-                speed: this.format(state.speed / 1e6),
-                remainingTime: this.format(state.time.remaining),
-                remainingSize: this.format((state.size.total - state.size.transferred) / 1e6),
-                state: this.stateById[id]
-            };
-            this.webSocketManager.sendMessage({
-                channel: "progress",
-                data: p,
-                id: id
-            });
-        }).on('error', (err: Error) => {
-            console.error(err);
-            this.appendLog("error", downloadName + "\n\t==>" + err);
-            this.cleanRequest(id);
-            this.stateById[id] = "error";
-        }).on('end', () => {
-            const state = this.stateById[id];
-            const p: DownloadProgress = {
-                id: id,
-                _id: _id,
-                title: title,
-                fileName: fileName,
-                percent: 100,
-                speed: 0,
-                remainingTime: 0,
-                remainingSize: 0,
-                state: state
-            };
-            this.webSocketManager.sendMessage({
-                channel: "progress",
-                data: p,
-                id: id
-            });
-            this.appendLog("end", downloadName);
-            this.cleanRequest(id);
-            if (state === "cancel" || state === "error") {
-                fs.unlink(downloadFileDestination, unlErr => {
-                    const errorMsg = "Download " + state;
-                    notify(errorMsg, id);
-                    errorCallback(errorMsg);
-                    if (unlErr) {
-                        return console.error(unlErr);
-                    }
-                });
-            } else {
-                successCallback(downloadFileDestination);
-            }
-        }).pipe(fs.createWriteStream(downloadFileDestination));
+    }
+
+    downloadStart(meta: DownloadMetaData) {
+        const locations = { url: meta.directDownloadURI, savePath: meta.downloadFileDestination };
+        const req = startDownload(locations, this.downloaderOptions).subscribe({
+            next: p => this.onProgress(p, meta),
+            error: e => this.onError(e, meta),
+            complete: () => this.onEnd(meta)
+        });
+        this.requestById[meta.id] = req;
+    }
+
+    onProgress(state: SuDownloaderProgressInfos, meta: DownloadMetaData) {
+        const p: DownloadProgress = {
+            id: meta.id,
+            _id: meta._id,
+            title: meta.title,
+            fileName: meta.fileName,
+            percent: state.total ? this.format(state.total.percentage) : 0,
+            speed: this.format(state.avgSpeed / 1e6),
+            remainingTime: state.time ? this.format(state.time.eta) : 0,
+            remainingSize: state.total ? this.format((state.total.filesize - state.total.downloaded) / 1e6) : 0,
+            state: meta.state
+        };
+        this.webSocketManager.sendMessage({
+            channel: "progress",
+            data: p,
+            id: meta.id
+        });
+    }
+
+    onError(err: Error, meta: DownloadMetaData) {
+        console.error(err);
+        this.appendLog("error", meta.downloadName + "\n\t==>" + err);
+        meta.state = "error";
+        this.notifyErrorState(meta);
+        this.sendEndProgres(meta);
+    }
+
+    sendEndProgres(meta: DownloadMetaData) {
+        const p: DownloadProgress = {
+            id: meta.id,
+            _id: meta._id,
+            title: meta.title,
+            fileName: meta.fileName,
+            percent: 100,
+            speed: 0,
+            remainingTime: 0,
+            remainingSize: 0,
+            state: meta.state
+        };
+        this.webSocketManager.sendMessage({
+            channel: "progress",
+            data: p,
+            id: meta.id
+        });
+    }
+
+    onEnd(meta: DownloadMetaData) {
+        this.sendEndProgres(meta);
+        this.appendLog("end", meta.downloadName);
+        this.cleanRequest(meta.id);
+        meta.successCallback(meta.downloadFileDestination);
+    }
+
+    notifyErrorState(meta: DownloadMetaData) {
+        const errorMsg = "Download " + meta.state;
+        notify(errorMsg, meta.id);
+        meta.errorCallback(errorMsg);
     }
 
     cancel(id: number) {
         const req = this.requestById[id];
         if (req) {
-            req.abort();
-            this.appendLog("cancel", this.downloadNameById[id]);
-            this.stateById[id] = "cancel";
+            req.unsubscribe();
+            const meta = this.metaById[id];
+            this.appendLog("cancel", meta.downloadName);
+            meta.state = "cancel";
+            this.notifyErrorState(meta);
+            this.sendEndProgres(meta);
+            this.cleanRequest(meta.id);
+            fs.unlink(meta.downloadFileDestination, unlErr => {
+                if (unlErr) {
+                    return console.error(unlErr);
+                }
+            });
         } else {
             this.appendLog("cancel", id + " not found");
         }
@@ -104,29 +133,25 @@ export class DownloadManager implements DownloadActionListener {
     pause(id: number) {
         const req = this.requestById[id];
         if (req) {
-            req.pause();
-            this.appendLog("pause", this.downloadNameById[id]);
-            this.stateById[id] = "pause";
+            req.unsubscribe();
+            const meta = this.metaById[id];
+            this.appendLog("pause", meta.downloadName);
+            meta.state = "pause";
         } else {
             this.appendLog("pause", id + " not found");
         }
     }
 
     resume(id: number) {
-        const req = this.requestById[id];
-        if (req) {
-            req.resume();
-            this.appendLog("resume", this.downloadNameById[id]);
-            delete this.stateById[id];
-        } else {
-            this.appendLog("resume", id + " not found");
-        }
+        const meta = this.metaById[id];
+        this.downloadStart(meta);
+        this.appendLog("resume", meta.downloadName);
+        delete meta.state;
     }
 
     cleanRequest(id: number) {
         delete this.requestById[id];
-        delete this.downloadNameById[id];
-        delete this.stateById[id];
+        delete this.metaById[id];
         this.webSocketManager.clean(id);
     }
 
@@ -157,4 +182,47 @@ interface RequestProgressState {
         /** The remaining seconds to finish (3 decimals) **/
         remaining: number
     };
+}
+interface DownloadMetaData {
+    _id: number;
+    id: number;
+    title: string;
+    fileName: string;
+    downloadName: string;
+    downloadFileDestination: string;
+    directDownloadURI: string;
+    successCallback: (finalFilePath: string) => void;
+    errorCallback: (errorMsg: string) => void;
+    state?: DownloadState;
+}
+
+interface SuDownloaderProgressInfos {
+    time: {
+        /** timestamp */
+        start: number,
+        /** milliseconds */
+        elapsed: number,
+        /** seconds */
+        eta: number
+    };
+    total: {
+        /** bytes */
+        filesize: number,
+        /** bytes */
+        downloaded: number,
+        /** real number between 0 and 100 */
+        percentage: number
+    };
+    instance: {
+        /** bytes */
+        downloaded: number,
+        /** real number between 0 and 100 */
+        percentage: number
+    };
+    /** bytes per second */
+    speed: number;
+    /** bytes per second */
+    avgSpeed: number;
+    /** array of bytes */
+    threadPositions: number[];
 }
