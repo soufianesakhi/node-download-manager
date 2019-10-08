@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { DownloadProgress, DownloadState } from 'model';
 import * as path from 'path';
 import { Subscription } from 'rxjs';
-import { startDownload } from 'su-downloader3';
+import { killFiles, startDownload, sudPath } from 'su-downloader3';
 import { notify } from '../util/utils';
 import { DownloadActionListener, DownloadLinksWebSocketManager } from './websocket';
 
@@ -101,6 +101,7 @@ export class DownloadManager implements DownloadActionListener {
         this.sendEndProgres(meta);
         this.appendLog("end", meta.downloadName);
         this.cleanRequest(meta.id);
+        killFiles(sudPath(meta.downloadFileDestination));
         meta.successCallback(meta.downloadFileDestination);
     }
 
