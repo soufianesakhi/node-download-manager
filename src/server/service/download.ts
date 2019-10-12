@@ -12,9 +12,9 @@ export class DownloadManager implements DownloadActionListener {
     requestById: { [id: number]: Subscription } = {};
     metaById: { [id: number]: DownloadMetaData } = {};
     downloaderOptions = {
-        threads: 2,
+        threads: 1,
         throttleRate: 1000,
-        timeout: 20 * 1000
+        timeout: 40 * 1000
     };
 
     constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
