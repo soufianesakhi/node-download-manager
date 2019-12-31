@@ -54,6 +54,7 @@ export async function reindex(logDir: string, dryRun: boolean): Promise<number> 
 
         const fullTitles: string[] = [];
         infoLogger.append(`Checking for redundant entries in indexes ...`);
+        const changedDocs: DownloadLinksIndex[] = [];
         docs.forEach(doc => {
             infoLogger.append(``);
             const timestamp: Date = doc._id.getTimestamp();
@@ -72,6 +73,9 @@ export async function reindex(logDir: string, dryRun: boolean): Promise<number> 
                     toKeepLogger.append(`${fullTitle} -> ${doc.name}`);
                     fullTitles.push(fullTitle);
                 }
+            }
+            if (toBeRemoved > 0) {
+                changedDocs.push(doc);
             }
             infoLogger.append(`${toBeRemoved} / ${total} entries will be removed`);
             infoLogger.append(`Final list size: ${doc.list.length}`);
@@ -103,6 +107,13 @@ export async function reindex(logDir: string, dryRun: boolean): Promise<number> 
                     deleteIndex(olderIndex);
                 }
                 infoLogger.append(`  ${newerIndex.name} new size: ${newerIndex.list.length}`);
+            }
+        });
+        changedDocs.forEach(doc => {
+            // tslint:disable-next-line:triple-equals
+            if (indexNameToIndex[doc.name] == doc) {
+                doc.markModified("list");
+                indexesToUpdate.push(doc);
             }
         });
         if (!dryRun && indexesToUpdate.length > 0) {
