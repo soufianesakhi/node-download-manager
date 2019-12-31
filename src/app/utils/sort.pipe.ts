@@ -42,7 +42,7 @@ export class SortPipe implements PipeTransform {
     }
     return items.sort((item1, item2) => {
       return comparator(item1[orderBy], item2[orderBy]);
-    });
+    }).slice(0);
   }
 
   getInverseComparator(comp: (a, b) => number): (a, b) => number {
