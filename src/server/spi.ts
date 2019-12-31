@@ -6,7 +6,8 @@ import { DownloadSPI } from '..';
 export const SPIPath = '/spi';
 const metadata: DownloadSPI = {
     supported: false,
-    path: ""
+    path: "",
+    ignoredCats: []
 };
 
 export function registerSPI(app: Express) {

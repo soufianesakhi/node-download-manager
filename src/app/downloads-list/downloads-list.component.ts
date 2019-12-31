@@ -1,19 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit
-} from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { DownloadLinksEntry, DownloadLinksModel } from "../..";
 import { DownloadsService } from "../service/downloads.service";
-import {
-  copyText,
-  flatLinks,
-  removeFromArray,
-  setFullTitle,
-  stringifyLinks
-} from "../utils/downloads-utils";
+import { copyText, flatLinks, removeFromArray, setFullTitle, stringifyLinks } from "../utils/downloads-utils";
 
 @Component({
   selector: "app-downloads-list",
@@ -31,6 +20,7 @@ export class DownloadsListComponent implements OnInit {
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
   downloadSupported: boolean;
+  ignoredCats: string[] = [];
   downloadSubmitted = false;
   editingSelectedTitle = false;
 
@@ -53,6 +43,7 @@ export class DownloadsListComponent implements OnInit {
     });
     this.downloadsService.getDownloadSPI().subscribe(spi => {
       this.downloadSupported = spi.supported;
+      this.ignoredCats = spi.ignoredCats;
     });
     this.activatedRoute.queryParams.subscribe((params: Params) => {
       const order = params["sort"];

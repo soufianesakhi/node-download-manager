@@ -14,6 +14,7 @@ import { CategorySelectComponent } from "./utils/category-select.component";
 import { FullTitleFilterPipe } from "./utils/full-title-filter.pipe";
 import { HasCommentsPipe } from "./utils/has-comments.pipe";
 import { SortPipe } from "./utils/sort.pipe";
+import { CustomFiltersPipe } from './utils/custom-filters.pipe';
 
 export const appRoutes: Routes = [
   {
@@ -48,7 +49,8 @@ export const appRoutes: Routes = [
     CategoryFilterPipe,
     SortPipe,
     HasCommentsPipe,
-    DownloadProgressComponent
+    DownloadProgressComponent,
+    CustomFiltersPipe
   ],
   imports: [
     BrowserModule,

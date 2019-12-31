@@ -3,17 +3,7 @@ import { Injectable } from "@angular/core";
 import "rxjs/add/operator/map";
 import { Subject } from "rxjs/Subject";
 // tslint:disable-next-line:max-line-length
-import {
-  DownloadActionWSMessage,
-  DownloadLinks,
-  DownloadLinksEntry,
-  DownloadLinksIndex,
-  DownloadLinksModel,
-  DownloadLinksWSMessage,
-  DownloadProgress,
-  DownloadSPI,
-  ValueModel
-} from "../..";
+import { DownloadActionWSMessage, DownloadLinks, DownloadLinksEntry, DownloadLinksIndex, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel } from "../..";
 
 @Injectable()
 export class DownloadsService {
