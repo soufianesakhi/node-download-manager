@@ -19,6 +19,7 @@ export class DownloadsListComponent implements OnInit {
   category = "";
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
+  maxDate = null;
   downloadSupported: boolean;
   ignoredCats: string[] = [];
   downloadSubmitted = false;

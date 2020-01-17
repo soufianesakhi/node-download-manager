@@ -11,7 +11,7 @@
       </span>
       <span
         >Search:
-        <input [(ngModel)]="fullTitle" />
+        <input [(ngModel)]="fullTitle" size="10"/>
       </span>
       <span
         >Sort by:
@@ -32,6 +32,10 @@
           <option value="false">false</option>
         </select>
       </span>
+      <span
+        >Max date:
+        <input [(ngModel)]="maxDate" size="10"/>
+      </span>
       <span> ({{ filterMetadata.count + " of " + downloadLinks.length }})</span>
     </div>
 
@@ -49,7 +53,7 @@
                 | categoryFilter: category
                 | hasComments: checkComents
                 | fullTitleFilter: fullTitle:filterMetadata
-                | customFilters: order:ignoredCats:filterMetadata
+                | customFilters: order:ignoredCats:maxDate:filterMetadata
                 | sort: order:ascending
             "
             [class.text-primary]="isSelected(links)"
