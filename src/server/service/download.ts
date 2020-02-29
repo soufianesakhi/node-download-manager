@@ -23,6 +23,7 @@ export class DownloadManager implements DownloadActionListener {
     }
 
     download(directDownloadURI: string,
+            host: string,
             title: string,
             fileName: string,
             _id: number,
@@ -36,9 +37,13 @@ export class DownloadManager implements DownloadActionListener {
             _id, id, title, fileName, downloadName, downloadFileDestination, directDownloadURI,
             successCallback, errorCallback
         };
+        if (fs.existsSync(downloadFileDestination)) {
+            return this.onEnd(meta);
+        }
         this.metaById[id] = meta;
         this.downloadStart(meta);
         this.appendLog("start", downloadName);
+        notify("Download started", host + ` (${id.toString().substring(0, 4)})`);
     }
 
     downloadStart(meta: DownloadMetaData) {
