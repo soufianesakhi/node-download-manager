@@ -1,11 +1,25 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DownloadsService } from '../service/downloads.service';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from "@angular/core";
+import { DownloadsService } from "../service/downloads.service";
 
 @Component({
-  selector: 'app-category-select',
+  selector: "app-category-select",
   template: `
-    <select [class.form-control]="form" name="categoryInput" [ngModel]="value" (ngModelChange)="change($event)">
-      <option *ngFor="let c of categories" [selected]="c === value">{{c}}</option>
+    <select
+      [class.form-control]="form"
+      name="categoryInput"
+      [ngModel]="value"
+      (ngModelChange)="change($event)"
+    >
+      <option *ngFor="let c of categories" [selected]="c === value">{{
+        c
+      }}</option>
     </select>
   `
 })
@@ -20,7 +34,10 @@ export class CategorySelectComponent implements OnInit {
   valueChange = new EventEmitter<string>();
   categories: string[];
 
-  constructor(private downloadsService: DownloadsService) { }
+  constructor(
+    private downloadsService: DownloadsService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.downloadsService.getCategories().subscribe(values => {
@@ -32,6 +49,7 @@ export class CategorySelectComponent implements OnInit {
           this.change(this.categories[0]);
         }
       }
+      this.changeDetectorRef.detectChanges();
     });
   }
 
@@ -39,5 +57,4 @@ export class CategorySelectComponent implements OnInit {
     this.value = newValue;
     this.valueChange.emit(newValue);
   }
-
 }

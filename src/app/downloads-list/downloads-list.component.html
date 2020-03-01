@@ -158,7 +158,8 @@
             <b>Index</b>: {{ selectedLinks.indexName }}
           </li>
           <li class="list-group-item">
-            <b>Category</b>: {{ selectedLinks.category }}
+            <b>Category</b>
+            <app-category-select [(value)]="selectedLinks.category"></app-category-select>
             <span *ngIf="selectedLinks.priority">
               <b>Priority</b>:
               <input
