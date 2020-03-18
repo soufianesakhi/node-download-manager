@@ -19,7 +19,8 @@ export class DownloadsListComponent implements OnInit {
   category = "";
   flatLinks = flatLinks;
   filterMetadata = { count: 0 };
-  maxDate = null;
+  maxDate: string = null;
+  maxPriority: string = null;
   downloadSupported: boolean;
   ignoredCats: string[] = [];
   downloadSubmitted = false;
@@ -61,6 +62,8 @@ export class DownloadsListComponent implements OnInit {
       if (category != null) {
         this.category = category;
       }
+      this.maxDate = params["maxDate"];
+      this.maxPriority = params["maxPriority"];
     });
   }
 

@@ -6,8 +6,14 @@ import { DownloadLinks } from 'model';
 })
 export class CustomFiltersPipe implements PipeTransform {
 
-  transform(items: DownloadLinks[], order: string, ignoredCats: string[], maxDateStr: string, filterMetadata): DownloadLinks[] {
-    if (!items) {
+  transform(
+    items: DownloadLinks[],
+    order: string,
+    ignoredCats: string[],
+    maxDateStr: string,
+    maxPriorityStr: string,
+    filterMetadata
+  ): DownloadLinks[] {  if (!items) {
       filterMetadata.count = 0;
       return [];
     }
@@ -18,6 +24,16 @@ export class CustomFiltersPipe implements PipeTransform {
           items = items.filter(it => {
             const createAt: any = it.updatedAt || it.createdAt;
             return Date.parse(createAt) <= maxDate;
+          });
+        }
+      } catch (e) {}
+    }
+    if (maxPriorityStr != null) {
+      try {
+        const maxPriority = Number.parseFloat(maxPriorityStr);
+        if (!isNaN(maxPriority)) {
+          items = items.filter(it => {
+            return it.priority <= maxPriority;
           });
         }
       } catch (e) {}
