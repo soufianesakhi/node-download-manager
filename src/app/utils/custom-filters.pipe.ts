@@ -16,7 +16,7 @@ export class CustomFiltersPipe implements PipeTransform {
         const maxDate = Date.parse(maxDateStr);
         if (!isNaN(maxDate)) {
           items = items.filter(it => {
-            const createAt: any = it.updatedAt;
+            const createAt: any = it.updatedAt || it.createdAt;
             return Date.parse(createAt) <= maxDate;
           });
         }
