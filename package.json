@@ -11,7 +11,7 @@
     "e2e": "ng e2e",
     "watch-ng": "ng build --watch",
     "build-server": "tsc -p src/tsconfig.server.json",
-    "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server && title node && node dist-server/main\"",
+    "watch-server": "nodemon -w src/server -e ts --exec \"npm run build-server && title node && set PORT=5000 && node dist-server/main\"",
     "build-ext": "tsc -p src/tsconfig.ext.json",
     "watch-ext": "title \"tsc ext\" && tsc --watch -p src/tsconfig.ext.json",
     "watch-scripts": "title scripts && tsc --watch -p src/tsconfig.scripts.json",
