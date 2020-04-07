@@ -1,14 +1,16 @@
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
 import * as http from 'http';
+import * as mongoose from 'mongoose';
 import * as path from 'path';
 import 'source-map-support/register';
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import * as mongoose from 'mongoose';
 import { ApiRegistry } from './api/registry';
-import { notify } from './util/utils';
+import { DownloadManager } from './service/download';
 import { DownloadLinksWebSocketManager } from './service/websocket';
 import { registerSPI } from './spi';
-import { DownloadManager } from './service/download';
+import { notify } from './util/utils';
+
+global["fetch"] = require("node-fetch");
 
 let dbUrl: string;
 let downloadDirectory: string;
