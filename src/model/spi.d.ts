@@ -1,7 +1,8 @@
 declare module "model" {
-    interface DownloadSPI {
-        supported: boolean;
-        path: string
-        ignoredCats: string[];
-    }
+  interface DownloadSPI {
+    default: boolean;
+    supported: string[];
+    path: string;
+    ignoredCats: string[];
+  }
 }

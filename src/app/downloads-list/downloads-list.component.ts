@@ -1,13 +1,24 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { DownloadLinksEntry, DownloadLinksModel } from "../..";
 import { DownloadsService } from "../service/downloads.service";
-import { copyText, flatLinks, removeFromArray, setFullTitle, stringifyLinks } from "../utils/downloads-utils";
+import {
+  copyText,
+  flatLinks,
+  removeFromArray,
+  setFullTitle,
+  stringifyLinks,
+} from "../utils/downloads-utils";
 
 @Component({
   selector: "app-downloads-list",
   templateUrl: "./downloads-list.component.html",
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DownloadsListComponent implements OnInit {
   downloadLinks: DownloadLinksEntry[] = [];
@@ -33,19 +44,20 @@ export class DownloadsListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.downloadsService.getAllDownloadLinks().subscribe(downloadLinks => {
+    this.downloadsService.getAllDownloadLinks().subscribe((downloadLinks) => {
       this.downloadLinks.push(...downloadLinks);
       this.updateDownloadLinks();
     });
-    this.downloadsService.newDownloadLinksSubscribe(links => {
+    this.downloadsService.newDownloadLinksSubscribe((links) => {
       this.downloadLinks.splice(0, 0, links);
       this.filterMetadata.count++;
       this.selectedLinks = links;
       this.updateDownloadLinks();
     });
-    this.downloadsService.getDownloadSPI().subscribe(spi => {
-      this.downloadSupported = spi.supported;
-      this.ignoredCats = spi.ignoredCats;
+    this.downloadsService.getDownloadSPI().subscribe((spis) => {
+      const spi = spis.filter((s) => s.default).shift();
+      this.downloadSupported = spi != null;
+      this.ignoredCats = spi && spi.ignoredCats;
     });
     this.activatedRoute.queryParams.subscribe((params: Params) => {
       const order = params["sort"];
@@ -90,13 +102,13 @@ export class DownloadsListComponent implements OnInit {
 
   deleteSelect() {
     this.downloadsService.deleteDownloadLinks(this.selectedLinks).subscribe(
-      l => {
+      (l) => {
         removeFromArray(this.downloadLinks, this.selectedLinks);
         this.selectedLinks = this.downloadLinks[0];
         this.filterMetadata.count--;
         this.updateDownloadLinks();
       },
-      error => {
+      (error) => {
         console.error(error);
       }
     );
@@ -125,7 +137,7 @@ export class DownloadsListComponent implements OnInit {
   saveSelectedLinks() {
     this.downloadsService
       .updateDownloadLinks(this.selectedLinks)
-      .subscribe(result => {
+      .subscribe((result) => {
         console.log("Saved selected links");
         console.log(result);
       });
@@ -159,7 +171,7 @@ export class DownloadsListComponent implements OnInit {
   }
 
   openLinks() {
-    flatLinks(this.selectedLinks).forEach(link => {
+    flatLinks(this.selectedLinks).forEach((link) => {
       window.open(link, "_blank");
     });
   }

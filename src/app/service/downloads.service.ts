@@ -1,20 +1,31 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import "rxjs/add/operator/map";
+import { Observable } from "rxjs";
+import { flatMap, map, take } from "rxjs/operators";
 import { Subject } from "rxjs/Subject";
 // tslint:disable-next-line:max-line-length
-import { DownloadActionWSMessage, DownloadLinks, DownloadLinksEntry, DownloadLinksIndex, DownloadLinksModel, DownloadLinksWSMessage, DownloadProgress, DownloadSPI, ValueModel } from "../..";
+import {
+  DownloadActionWSMessage,
+  DownloadLinks,
+  DownloadLinksEntry,
+  DownloadLinksIndex,
+  DownloadLinksModel,
+  DownloadLinksWSMessage,
+  DownloadProgress,
+  DownloadSPI,
+  ValueModel,
+} from "../..";
 
 @Injectable()
 export class DownloadsService {
-  spi: DownloadSPI;
+  spis: DownloadSPI[];
   private newDownloadLinksSubject = new Subject<DownloadLinksModel>();
   private downloadProgressSubject = new Subject<DownloadProgress>();
   private webSocketClient: WebSocket;
   constructor(private http: HttpClient) {
     this.startWebSocketConnection();
-    this.getDownloadSPI().subscribe(spi => {
-      this.spi = spi;
+    this.getDownloadSPI().subscribe((spis) => {
+      this.spis = spis;
     });
   }
 
@@ -22,15 +33,15 @@ export class DownloadsService {
     const allDownloadLinksSubject = new Subject<DownloadLinksEntry[]>();
     this.http
       .get<DownloadLinksModel[]>("/api/downloads")
-      .subscribe(downloadLinks => {
+      .subscribe((downloadLinks) => {
         allDownloadLinksSubject.next(downloadLinks);
       });
     this.http
       .get<DownloadLinksIndex[]>("/api/indexes")
-      .subscribe(downloadLinksIndexes => {
-        downloadLinksIndexes.forEach(index => {
+      .subscribe((downloadLinksIndexes) => {
+        downloadLinksIndexes.forEach((index) => {
           allDownloadLinksSubject.next(
-            index.list.map(links => {
+            index.list.map((links) => {
               const entry = links as DownloadLinksEntry;
               entry.indexName = index.name;
               return entry;
@@ -47,7 +58,7 @@ export class DownloadsService {
 
   deleteDownloadLinks(links: DownloadLinksModel) {
     return this.http.delete("/api/downloads/" + links._id, {
-      responseType: "text"
+      responseType: "text",
     });
   }
 
@@ -65,7 +76,7 @@ export class DownloadsService {
 
   startWebSocketConnection() {
     this.webSocketClient = new WebSocket("ws://" + window.location.host);
-    this.webSocketClient.onmessage = e => {
+    this.webSocketClient.onmessage = (e) => {
       const message: DownloadLinksWSMessage = JSON.parse(e.data);
       const channel = message.channel;
       if (channel === "new") {
@@ -74,7 +85,7 @@ export class DownloadsService {
         this.downloadProgressSubject.next(message.data);
       }
     };
-    this.webSocketClient.onerror = e => {
+    this.webSocketClient.onerror = (e) => {
       console.log("WebSocket Connection Error");
     };
     this.webSocketClient.onopen = () => {
@@ -99,22 +110,49 @@ export class DownloadsService {
   }
 
   getDownloadSPI() {
-    return this.http.get<DownloadSPI>("/spi/download");
+    return this.http.get<DownloadSPI[]>("/spi/download");
   }
 
-  downloadLinks(id) {
-    if (!this.spi.supported) {
-      console.warn("Download not supported");
-      return;
-    }
-    return this.http.post(this.spi.path + "/" + id, "");
+  downloadLinks(id): Observable<any> {
+    return this.getSupportedSpi(id).pipe(
+      flatMap((spi) =>
+        this.http.post(spi.path + "/" + id, "", {
+          responseType: "text",
+        })
+      ),
+      take(1)
+    );
   }
 
   checkLinks(id) {
-    if (!this.spi.supported) {
-      console.warn("Download not supported");
-      return;
-    }
-    return this.http.put(this.spi.path + "/" + id, "");
+    return this.getSupportedSpi(id).pipe(
+      flatMap((spi) =>
+        this.http.put(spi.path + "/" + id, "", {
+          responseType: "text",
+        })
+      ),
+      take(1)
+    );
+  }
+
+  getSupportedSpi(id): Observable<DownloadSPI> {
+    return this.http.get<DownloadLinksModel>("/api/downloads/" + id).pipe(
+      map((downloadLinks) => {
+        const downloadSpi = this.spis
+          .filter((spi) =>
+            spi.supported.some((pattern) =>
+              downloadLinks.links.some((links) =>
+                RegExp(pattern, "i").test(links[0])
+              )
+            )
+          )
+          .shift();
+        if (!downloadSpi) {
+          throw Error("No supported spi found");
+        }
+        return downloadSpi;
+      }),
+      take(1)
+    );
   }
 }

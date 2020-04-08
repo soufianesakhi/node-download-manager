@@ -17,7 +17,7 @@ export class DownloadManager implements DownloadActionListener {
         timeout: 40 * 1000
     };
 
-    constructor(private webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
+    constructor(public webSocketManager: DownloadLinksWebSocketManager, private downloadDirectory: string) {
         this.downloadsLogFile = path.join(downloadDirectory, "downloads.logs.txt");
         this.webSocketManager.registerDownloadActionListener(this);
     }

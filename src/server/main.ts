@@ -69,7 +69,7 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '3003';
 app.set('port', port);
 
 const server = http.createServer(app);

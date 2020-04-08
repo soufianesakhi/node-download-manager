@@ -65,7 +65,7 @@
     "@types/jquery": "3.2.1",
     "@types/mongodb": "^3.0.5",
     "@types/mongoose": "^5.0.2",
-    "@types/node": "~6.0.60",
+    "@types/node": "^10.17.18",
     "@types/node-notifier": "0.0.28",
     "@types/request": "^2.47.0",
     "@types/websocket": "0.0.37",
