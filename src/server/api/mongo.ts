@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
-import { notify, handleError } from '../util/utils';
-import { Document, Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import { Document, Model } from 'mongoose';
+import { handleError, notify } from '../util/utils';
 
 export class MongoAPI<D extends Document> {
     private ID_PATH = "id";
@@ -28,7 +28,9 @@ export class MongoAPI<D extends Document> {
         new this.Dao(req.body).save().then(doc => {
             res.send(doc);
             this.postSuccessCallback(doc);
-            notify('Success', doc._id + " created");
+            if (!req.query.silent) {
+                notify('Success', doc._id + " created");
+            }
         }).catch(err => handleError(err, res));
     }
 
