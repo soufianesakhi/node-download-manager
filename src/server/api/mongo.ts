@@ -12,6 +12,7 @@ export class MongoAPI<D extends Document> {
         this.router.post(this.path, this.post.bind(this));
         this.router.put(this.path, this.update.bind(this));
         this.router.post(this.path + "/search", this.search.bind(this));
+        this.router.get(this.path + "/search", this.search.bind(this));
 
         const idPath = this.pathId(this.path);
         this.router.delete(idPath, this.deleteById.bind(this));
@@ -48,10 +49,17 @@ export class MongoAPI<D extends Document> {
 
     search(req: Request, res: Response) {
         let conditions = req.body;
-        if (!conditions) {
-            return handleError("Body not found", res);
-        }
         const query = req.query;
+        const mapField = query.mapField;
+        const condition = query.condition;
+        if (!conditions || Object.keys(conditions).length === 0) {
+            if (mapField && condition) {
+                conditions = {};
+                conditions[mapField] = condition;
+            } else {
+                return handleError("Body not found", res);
+            }
+        }
         if (query.contains) {
             const regExpConditions = {};
             Object.keys(conditions).forEach(c => {
@@ -60,7 +68,11 @@ export class MongoAPI<D extends Document> {
             conditions = regExpConditions;
         }
         this.Dao.find(conditions).then(docs => {
-            res.send(docs);
+            if (mapField) {
+                res.send(docs.map(d => d[mapField]));
+            } else {
+                res.send(docs);
+            }
         }).catch(err => handleError(err, res));
     }
 
