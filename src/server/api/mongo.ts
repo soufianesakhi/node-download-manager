@@ -48,28 +48,43 @@ export class MongoAPI<D extends Document> {
     preUpdate(d: D) { }
 
     search(req: Request, res: Response) {
-        let conditions = req.body;
+        const body = req.body;
         const query = req.query;
-        const mapField = query.mapField;
         const condition = query.condition;
-        if (!conditions || Object.keys(conditions).length === 0) {
-            if (mapField && condition) {
-                conditions = {};
-                conditions[mapField] = condition;
+        const searchFields = query.searchFields;
+        let conditions: any[];
+        if (!body || Object.keys(body).length === 0) {
+            if (searchFields && condition) {
+                const fields: string[] = searchFields.split(",");
+                conditions = fields.map(field => {
+                    const obj = {};
+                    obj[field] = condition;
+                    return obj;
+               });
             } else {
                 return handleError("Body not found", res);
             }
+        } else {
+            conditions = body.conditions;
         }
         if (query.contains) {
-            const regExpConditions = {};
-            Object.keys(conditions).forEach(c => {
-                regExpConditions[c] = new RegExp(".*" + conditions[c] + ".*", "i");
+            conditions = conditions.map(obj => {
+                Object.keys(obj).forEach(field => {
+                    obj[field] = new RegExp(".*" + obj[field] + ".*", "i");
+                });
+                return obj;
             });
-            conditions = regExpConditions;
         }
-        this.Dao.find(conditions).then(docs => {
-            if (mapField) {
-                res.send(docs.map(d => d[mapField]));
+        this.Dao.find().or(conditions).then(docs => {
+            const mapFields = query.mapFields;
+            if (mapFields) {
+                const fields: string[] = mapFields.split(",");
+                res.send(docs.map(doc => {
+                    return fields.reduce((acc, field) => {
+                        acc[field] = doc[field];
+                        return acc;
+                   }, {});
+                }));
             } else {
                 res.send(docs);
             }
