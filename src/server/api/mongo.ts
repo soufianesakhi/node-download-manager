@@ -50,16 +50,20 @@ export class MongoAPI<D extends Document> {
     search(req: Request, res: Response) {
         const body = req.body;
         const query = req.query;
-        const condition = query.condition;
+        const search = query.search;
         const searchFields = query.searchFields;
         let conditions: any[];
         if (!body || Object.keys(body).length === 0) {
-            if (searchFields && condition) {
+            if (searchFields && search) {
+                const searchQueries: string[] = search.split("||");
                 const fields: string[] = searchFields.split(",");
-                conditions = fields.map(field => {
-                    const obj = {};
-                    obj[field] = condition;
-                    return obj;
+                conditions = [];
+                fields.forEach(field => {
+                    searchQueries.forEach((condition) => {
+                        const obj = {};
+                        obj[field] = condition;
+                        conditions.push(obj);
+                    });
                });
             } else {
                 return handleError("Body not found", res);
