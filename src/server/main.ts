@@ -47,6 +47,9 @@ function tryConnectMongo() {
 }
 tryConnectMongo();
 
+const port = process.env.PORT || '3003';
+app.set('port', port);
+
 // Set our api routes
 const apiRegistry = new ApiRegistry(app);
 
@@ -68,9 +71,6 @@ process.on('SIGINT', () => {
     console.log("Server shut down");
     process.exit(0);
 });
-
-const port = process.env.PORT || '3003';
-app.set('port', port);
 
 const server = http.createServer(app);
 server.listen(port, () => console.log(`Running on localhost:${port}`));

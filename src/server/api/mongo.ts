@@ -12,7 +12,6 @@ export class MongoAPI<D extends Document> {
         this.router.post(this.path, this.post.bind(this));
         this.router.put(this.path, this.update.bind(this));
         this.router.post(this.path + "/search", this.search.bind(this));
-        this.router.get(this.path + "/search", this.search.bind(this));
 
         const idPath = this.pathId(this.path);
         this.router.delete(idPath, this.deleteById.bind(this));
@@ -50,24 +49,9 @@ export class MongoAPI<D extends Document> {
     search(req: Request, res: Response) {
         const body = req.body;
         const query = req.query;
-        const search = query.search;
-        const searchFields = query.searchFields;
         let conditions: any[];
         if (!body || Object.keys(body).length === 0) {
-            if (searchFields && search) {
-                const searchQueries: string[] = search.split("||");
-                const fields: string[] = searchFields.split(",");
-                conditions = [];
-                fields.forEach(field => {
-                    searchQueries.forEach((condition) => {
-                        const obj = {};
-                        obj[field] = condition;
-                        conditions.push(obj);
-                    });
-               });
-            } else {
-                return handleError("Body not found", res);
-            }
+            return handleError("Body not found", res);
         } else {
             conditions = body.conditions;
         }
@@ -80,18 +64,7 @@ export class MongoAPI<D extends Document> {
             });
         }
         this.Dao.find().or(conditions).then(docs => {
-            const mapFields = query.mapFields;
-            if (mapFields) {
-                const fields: string[] = mapFields.split(",");
-                res.send(docs.map(doc => {
-                    return fields.reduce((acc, field) => {
-                        acc[field] = doc[field];
-                        return acc;
-                   }, {});
-                }));
-            } else {
-                res.send(docs);
-            }
+            res.send(docs);
         }).catch(err => handleError(err, res));
     }
 
