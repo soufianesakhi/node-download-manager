@@ -126,11 +126,7 @@ export class DownloadManager implements DownloadActionListener {
             this.notifyErrorState(meta);
             this.sendEndProgres(meta);
             this.cleanRequest(meta.id);
-            fs.unlink(meta.downloadFileDestination, unlErr => {
-                if (unlErr) {
-                    return console.error(unlErr);
-                }
-            });
+            killFiles(sudPath(meta.downloadFileDestination));
         } else {
             this.appendLog("cancel", id + " not found");
         }
