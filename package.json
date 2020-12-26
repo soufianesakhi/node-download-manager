@@ -41,7 +41,7 @@
     "mongoose": "^5.0.6",
     "mz": "^2.7.0",
     "node-fetch": "^2.6.0",
-    "node-notifier": "^5.4.3",
+    "node-notifier": "^9.0.0",
     "request": "^2.83.0",
     "request-progress": "^3.0.0",
     "rxjs": "^6.5.2",
